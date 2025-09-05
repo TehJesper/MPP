@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// test
 func usage() {
 	fmt.Printf(`Usage:
   %s create -name CHARACTER_NAME -race RACE -class CLASS -level N -str N -dex N -con N -int N -wis N -cha N
