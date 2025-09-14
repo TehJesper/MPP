@@ -14,4 +14,5 @@ type Character struct {
 }
 type Repository interface {
 	Create(c *Character) error
+	View(name string) (*Character, error)
 }

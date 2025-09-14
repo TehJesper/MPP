@@ -30,3 +30,17 @@ func (s *Service) CreateNewCharacter (name string, class string, race string, le
 	fmt.Println("Character created!")
 	return char, nil
 }
+func (s *Service) ViewCharacterByName(name string) (string, error) {
+	c, err := s.repo.View(name)
+	if err != nil {
+		return "", err
+	}
+
+	// Return a formatted string
+	return fmt.Sprintf(
+		"Name: %s, Race: %s, Class: %s, Level: %d, STR: %d, DEX: %d, CON: %d, INT: %d, WIS: %d, CHA: %d",
+		c.Name, c.Race, c.Class, c.Level,
+		c.Strength, c.Dexterity, c.Constitution,
+		c.Intelligence, c.Wisdom, c.Charisma,
+	), nil
+}
