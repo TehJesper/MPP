@@ -32,12 +32,13 @@ func main() {
 		race TEXT,
 		class TEXT,
 		level INTEGER,
-		strength,
-		dexterity,
-		constitution,
-		intelligence,
-		wisdom,
-		charisma
+		strength INTEGER,
+		dexterity INTEGER,
+		constitution INTEGER,
+		intelligence INTEGER,
+		wisdom INTEGER,
+		charisma INTEGER,
+		skills TEXT
 		)`)
 	if err != nil {
 		log.Fatal(err)
@@ -53,20 +54,25 @@ func main() {
 		class := createCmd.String("class", "", "character class (required)")
 		race := createCmd.String("race", "", "charcter race (required)")
 		level := createCmd.Int("level", 1, "character level")
-		strength := createCmd.Int("str", 1, "character strength")
-		dexterity := createCmd.Int("dex", 1, "character dexterity")
-		constitution := createCmd.Int("con", 1, "character constitution")
-		intelligence := createCmd.Int("int", 1, "character intelligence")
-		wisdom := createCmd.Int("wis", 1, "character wisdom")
-		charisma := createCmd.Int("cha", 1, "character charisma")
+		strength := createCmd.Int("str", 10, "character strength")
+		dexterity := createCmd.Int("dex", 10, "character dexterity")
+		constitution := createCmd.Int("con", 10, "character constitution")
+		intelligence := createCmd.Int("int", 10, "character intelligence")
+		wisdom := createCmd.Int("wis", 10, "character wisdom")
+		charisma := createCmd.Int("cha", 10, "character charisma")
 		createCmd.Parse(os.Args[2:])
+
+		if *name == "" {
+			fmt.Println("name is required")
+			os.Exit(2)
+		}
 
 		char, err := service.CreateNewCharacter(*name, *class, *race, *level, *strength, *dexterity, *constitution, *intelligence, *wisdom, *charisma)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Println("Created character", char.Name)
+		fmt.Println("saved character", char.Name)
 	
 	
 	case "view":
@@ -82,13 +88,23 @@ func main() {
 		// Call the service
 		output, err := service.ViewCharacterByName(*name)
 		if err != nil {
-			fmt.Println("Error:", err)
+			fmt.Println(err)
 		} else {
 			fmt.Println(output)
 }
 		
 	case "delete":
-		// TODO delete by name
+		viewCmd := flag.NewFlagSet("delete", flag.ExitOnError)
+		name := viewCmd.String("name", "", "character name (required)")
+		_ = viewCmd.Parse(os.Args[2:])
+
+		if *name == "" {
+			fmt.Println("name is required")
+			os.Exit(2)
+		}
+		// TODO add error handling and log 
+		service.DeleteCharacterByName(*name)
+		fmt.Printf("deleted %s\n", (*name))
 	// case "serve":
     // // Serve static files from ./static
     // fs := http.FileServer(http.Dir("./static"))

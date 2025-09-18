@@ -29,6 +29,7 @@ go.work.sum
 
 # db files
 *.db
+
 # Editor/IDE
 # .idea/
 # .vscode/
