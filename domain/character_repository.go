@@ -1,0 +1,7 @@
+package domain
+
+type CharacterRepository interface {
+	Save(c Character) (Character, error)
+	View(name string) (Character, error)
+	Delete(name string)
+}

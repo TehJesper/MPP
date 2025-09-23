@@ -4,18 +4,19 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
-	// "html/template"
 	"log"
-	// "net/http"
 	"os"
-	"test/character"
 
-	_ "modernc.org/sqlite" // pure Go SQLite driver
+	"test/infrastructure"
+	"test/services"
+	"test/domain"
+
+	_ "modernc.org/sqlite"
 )
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: create | view |serve")
+		fmt.Println("Usage: create | view")
 		os.Exit(1)
 	}
 
@@ -25,7 +26,6 @@ func main() {
 	}
 	defer db.Close()
 
-	// Ensure table exists
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS characters (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		name TEXT UNIQUE,
@@ -39,72 +39,96 @@ func main() {
 		wisdom INTEGER,
 		charisma INTEGER,
 		skills TEXT
-		)`)
+	)`)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	repo := character.NewSQLRepository(db)
-	service := character.NewService(repo)
+	repo := infrastructure.NewSQLRepository(db)
+	service := services.NewService(repo)
 
 	switch os.Args[1] {
 	case "create":
 		createCmd := flag.NewFlagSet("create", flag.ExitOnError)
 		name := createCmd.String("name", "", "character name (required)")
 		class := createCmd.String("class", "", "character class (required)")
-		race := createCmd.String("race", "", "charcter race (required)")
+		race := createCmd.String("race", "", "character race (required)")
 		level := createCmd.Int("level", 1, "character level")
-		strength := createCmd.Int("str", 10, "character strength")
-		dexterity := createCmd.Int("dex", 10, "character dexterity")
-		constitution := createCmd.Int("con", 10, "character constitution")
-		intelligence := createCmd.Int("int", 10, "character intelligence")
-		wisdom := createCmd.Int("wis", 10, "character wisdom")
-		charisma := createCmd.Int("cha", 10, "character charisma")
+		strength := createCmd.Int("str", 10, "strength")
+		dexterity := createCmd.Int("dex", 10, "dexterity")
+		constitution := createCmd.Int("con", 10, "constitution")
+		intelligence := createCmd.Int("int", 10, "intelligence")
+		wisdom := createCmd.Int("wis", 10, "wisdom")
+		charisma := createCmd.Int("cha", 10, "charisma")
+
 		createCmd.Parse(os.Args[2:])
 
-		if *name == "" {
-			fmt.Println("name is required")
+		if *name == "" || *class == "" || *race == "" {
+			fmt.Println("name, class and race are required")
 			os.Exit(2)
 		}
 
-		char, err := service.CreateNewCharacter(*name, *class, *race, *level, *strength, *dexterity, *constitution, *intelligence, *wisdom, *charisma)
+		char, err := service.CreateNewCharacter(
+			*name, *class, *race, *level,
+			*strength, *dexterity, *constitution,
+			*intelligence, *wisdom, *charisma,
+		)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Println("saved character", char.Name)
-	
-	
+		fmt.Println("Saved character:", char.Name)
+
 	case "view":
-		viewCmd := flag.NewFlagSet("view", flag.ExitOnError)
-		name := viewCmd.String("name", "", "character name (required)")
-		_ = viewCmd.Parse(os.Args[2:])
+	viewCmd := flag.NewFlagSet("view", flag.ExitOnError)
+	name := viewCmd.String("name", "", "character name to view (optional)")
+	viewCmd.Parse(os.Args[2:])
 
-		if *name == "" {
-			fmt.Println("name is required")
-			os.Exit(2)
-		}
-
-		// Call the service
-		output, err := service.ViewCharacterByName(*name)
+	if *name != "" {
+		c, err := service.ViewCharacter(*name)
 		if err != nil {
-			fmt.Println(err)
-		} else {
-			fmt.Println(output)
-}
-		
-	case "delete":
-		viewCmd := flag.NewFlagSet("delete", flag.ExitOnError)
-		name := viewCmd.String("name", "", "character name (required)")
-		_ = viewCmd.Parse(os.Args[2:])
-
-		if *name == "" {
-			fmt.Println("name is required")
-			os.Exit(2)
+			log.Fatal(err)
 		}
-		// TODO add error handling and log 
-		service.DeleteCharacterByName(*name)
-		fmt.Printf("deleted %s\n", (*name))
+		fmt.Println(formatCharacter(c))
+	} 
+
+	case "delete":
+		viewCmd := flag.NewFlagSet("view", flag.ExitOnError)
+		name := viewCmd.String("name", "", "character name to view (optional)")
+		viewCmd.Parse(os.Args[2:])
+
+		service.DeleteCharacter(*name)
+
+	default:
+		fmt.Println("Usage: create | view")
+	}
+
+}
+
+
+func formatCharacter(c domain.Character) string {
+	return fmt.Sprintf(
+		`Name: %s
+Class: %s
+Race: %s
+Background: acolyte
+Level: %d
+Ability scores:
+  STR: %d
+  DEX: %d
+  CON: %d
+  INT: %d
+  WIS: %d
+  CHA: %d
+Proficiency bonus: +2
+Skill proficiencies: %s`,
+		c.Name, c.Class, c.Race, c.Level,
+		c.Strength, c.Dexterity, c.Constitution,
+		c.Intelligence, c.Wisdom, c.Charisma,
+		c.Skills,
+	)
+}
+
 	// case "serve":
     // // Serve static files from ./static
     // fs := http.FileServer(http.Dir("./static"))
@@ -126,5 +150,5 @@ func main() {
     // log.Fatal(http.ListenAndServe(":8080", nil))
 
 	// }
-}
-}
+// }
+// }
