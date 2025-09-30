@@ -77,7 +77,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		fmt.Println("Saved character:", char.Name)
+		fmt.Println("saved character", char.Name)
 
 	case "view":
 	viewCmd := flag.NewFlagSet("view", flag.ExitOnError)
@@ -89,7 +89,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(formatCharacter(c))
+		fmt.Println(c)
 	} 
 
 	case "delete":
