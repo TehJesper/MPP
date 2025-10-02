@@ -95,7 +95,6 @@ func LoadClassSkillsFromName(name string) ([]string, error) {
     return nil, nil
 }
 
-// Helper to extract all skill names from a class
 func extractSkills(c Class) []string {
     var skills []string
     for _, pc := range c.ProficiencyChoices {

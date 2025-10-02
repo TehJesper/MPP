@@ -16,7 +16,7 @@ import (
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: create | view")
+		fmt.Println("Usage: create | view | delete")
 		os.Exit(1)
 	}
 
@@ -63,8 +63,8 @@ func main() {
 
 		createCmd.Parse(os.Args[2:])
 
-		if *name == "" || *class == "" || *race == "" {
-			fmt.Println("name, class and race are required")
+		if *name == "" {
+			fmt.Println("name is required")
 			os.Exit(2)
 		}
 
@@ -85,22 +85,20 @@ func main() {
 	viewCmd.Parse(os.Args[2:])
 
 	if *name != "" {
-		c, err := service.ViewCharacter(*name)
-		if err != nil {
-			log.Fatal(err)
-		}
+		c := service.ViewCharacter(*name)
 		fmt.Println(c)
 	} 
 
 	case "delete":
-		viewCmd := flag.NewFlagSet("view", flag.ExitOnError)
+		viewCmd := flag.NewFlagSet("delete", flag.ExitOnError)
 		name := viewCmd.String("name", "", "character name to view (optional)")
 		viewCmd.Parse(os.Args[2:])
 
 		service.DeleteCharacter(*name)
+		fmt.Printf("deleted %s", *name)
 
 	default:
-		fmt.Println("Usage: create | view")
+		fmt.Println("Usage: create | view | delete")
 	}
 
 }

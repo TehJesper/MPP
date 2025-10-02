@@ -18,6 +18,7 @@ type Character struct {
 func NewCharacter(
 	name, race, class string,
 	level, str, dex, con, intel, wis, cha int,
+	skills string,
 ) Character {
 	return Character{
 		Name:         name,
@@ -30,5 +31,6 @@ func NewCharacter(
 		Intelligence: intel,
 		Wisdom:       wis,
 		Charisma:     cha,
+		Skills: 	  skills,
 	}
 }

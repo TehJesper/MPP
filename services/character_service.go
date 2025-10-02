@@ -4,8 +4,8 @@ import (
 	"test/domain"
 	"test/infrastructure"
 	"fmt"
-	"log"
 	"math"
+	"strings"
 	)
 
 type CharacterService struct {
@@ -31,27 +31,43 @@ func (s *CharacterService) CreateNewCharacter(
         return domain.Character{}, err
     }
 
-	// Check the skills
-	skills, err := infrastructure.LoadClassSkillsFromName(class)
+
+	skills := getSkills(class)
+
+	char := domain.NewCharacter(name, race, class, level, str, dex, con, intel, wis, cha, skills)
+
+	bonuses, err := infrastructure.GetRaceBonusesByName(race)
 	if err != nil {
-		log.Fatal(err)
+		return domain.Character{}, err
 	}
-	fmt.Println(skills)
 
-
-
-	char := domain.NewCharacter(name, race, class, level, str, dex, con, intel, wis, cha)
-
+	for ability, bonus := range bonuses {
+		switch strings.ToLower(ability) {
+		case "str":
+			char.Strength += bonus
+		case "dex":
+			char.Dexterity += bonus
+		case "con":
+			char.Constitution += bonus
+		case "int":
+			char.Intelligence += bonus
+		case "wis":
+			char.Wisdom += bonus
+		case "cha":
+			char.Charisma += bonus
+		}
+	}
 	return s.repo.Save(char)
 }
 
-func (s *CharacterService) ViewCharacter(name string) (string, error) {
+func (s *CharacterService) ViewCharacter(name string) (string) {
 	c, err := s.repo.View(name)
 
 	if err != nil {
-		return "", fmt.Errorf("character %s not found", name)
+		fmt.Printf(`character "%s" not found`, name)
+		return ""
 	}
-
+	
 	return formatCharacter(c)
 }
 
@@ -59,7 +75,7 @@ func (s *CharacterService) DeleteCharacter(name string) {
 	s.repo.Delete(name)
 }
 
-func formatCharacter(c domain.Character) (string, error) {
+func formatCharacter(c domain.Character) (string) {
 
 	return fmt.Sprintf(
 		`Name: %s
@@ -76,11 +92,11 @@ Ability scores:
   CHA: %s
 Proficiency bonus: +2
 Skill proficiencies: %s`,
-		c.Name, c.Class, c.Race, c.Level,
+		c.Name, strings.ToLower(c.Class), strings.ToLower(c.Race), c.Level,
 		formatStat(c.Strength), formatStat(c.Dexterity), formatStat(c.Constitution),
 		formatStat(c.Intelligence), formatStat(c.Wisdom), formatStat(c.Charisma),
 		c.Skills,
-	), nil
+	)
 }
 
 func formatStat(score int) string {
@@ -89,5 +105,6 @@ func formatStat(score int) string {
 	if mod < 0 {
 		sign = "" 
 	}
+
 	return fmt.Sprintf("%d (%s%d)", score, sign, mod)
 }
