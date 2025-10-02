@@ -11,7 +11,7 @@ func checkClass(class string) (error) {
     if err != nil {
         return err
     }
-	// Validate race
+
     if !domain.IsValidClass(class, classes) {
         return fmt.Errorf("invalid class: %s", class)
     }

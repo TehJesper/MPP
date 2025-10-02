@@ -11,7 +11,7 @@ func checkRace(race string) (error) {
     if err != nil {
         return err
     }
-	// Validate race
+
     if !domain.IsValidRace(race, races) {
         return fmt.Errorf("invalid race: %s", race)
     }
