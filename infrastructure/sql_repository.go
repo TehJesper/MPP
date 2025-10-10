@@ -14,15 +14,44 @@ func NewSQLRepository(db *sql.DB) *SQLRepository {
 }
 
 func (r *SQLRepository) Save(c domain.Character) (domain.Character, error) {
+	abilities := []any{
+		c.AbilityScore.Strength,
+		c.AbilityScore.Dexterity,
+		c.AbilityScore.Constitution,
+		c.AbilityScore.Intelligence,
+		c.AbilityScore.Wisdom,
+		c.AbilityScore.Charisma,
+	}
+
+	modifiers := []any{
+		c.AbilityModifiers.Strength,
+		c.AbilityModifiers.Dexterity,
+		c.AbilityModifiers.Constitution,
+		c.AbilityModifiers.Intelligence,
+		c.AbilityModifiers.Wisdom,
+		c.AbilityModifiers.Charisma,
+	}
+
+	args := []any{
+		c.Name,
+		c.Race,
+		c.Class,
+		c.Level,
+	}
+	args = append(args, abilities...)
+	args = append(args, modifiers...)
+	args = append(args, c.Skills)
+
 	res, err := r.db.Exec(`
 		INSERT INTO characters
-		(name, race, class, level, strength, dexterity, constitution, intelligence, wisdom, charisma, skills)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		c.Name, c.Race, c.Class, c.Level,
-		c.Strength, c.Dexterity, c.Constitution,
-		c.Intelligence, c.Wisdom, c.Charisma,
-		c.Skills,
-	)
+		(
+			name, race, class, level, 
+			strength, dexterity, constitution, intelligence, wisdom, charisma,
+			strength_mod, dexterity_mod, constitution_mod, intelligence_mod, wisdom_mod, charisma_mod,
+			skills
+		)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+	`, args...)
 	if err != nil {
 		return c, err
 	}
@@ -32,26 +61,34 @@ func (r *SQLRepository) Save(c domain.Character) (domain.Character, error) {
 	return c, nil
 }
 
+
 func (r *SQLRepository) View(name string) (domain.Character, error) {
 	var c domain.Character
+
 	row := r.db.QueryRow(`
 		SELECT id, name, race, class, level,
-		       strength, dexterity, constitution, intelligence, wisdom, charisma, skills
+		       strength, dexterity, constitution, intelligence, wisdom, charisma,
+		       strength_mod, dexterity_mod, constitution_mod, intelligence_mod, wisdom_mod, charisma_mod,
+		       skills
 		FROM characters
 		WHERE name = ?`, name)
 
 	err := row.Scan(
 		&c.ID, &c.Name, &c.Race, &c.Class, &c.Level,
-		&c.Strength, &c.Dexterity, &c.Constitution,
-		&c.Intelligence, &c.Wisdom, &c.Charisma,
+		&c.AbilityScore.Strength, &c.AbilityScore.Dexterity, &c.AbilityScore.Constitution,
+		&c.AbilityScore.Intelligence, &c.AbilityScore.Wisdom, &c.AbilityScore.Charisma,
+		&c.AbilityModifiers.Strength, &c.AbilityModifiers.Dexterity, &c.AbilityModifiers.Constitution,
+		&c.AbilityModifiers.Intelligence, &c.AbilityModifiers.Wisdom, &c.AbilityModifiers.Charisma,
 		&c.Skills,
 	)
 	if err != nil {
 		return c, err
 	}
+
 	return c, nil
 }
 
+
 func (r *SQLRepository) Delete(name string) {
-    r.db.Exec("DELETE FROM characters WHERE name = ?", name)
+	r.db.Exec("DELETE FROM characters WHERE name = ?", name)
 }

@@ -1,20 +1,21 @@
 package services
+
 import (
+	"fmt"
 	"test/domain"
 	"test/infrastructure"
-	"fmt"
 )
 
-func checkClass(class string) (error) {
+func checkClass(class string) error {
 	classes, err := infrastructure.LoadClassesAndSubclasses()
 
-    if err != nil {
-        return err
-    }
+	if err != nil {
+		return err
+	}
 
-    if !domain.IsValidClass(class, classes) {
-        return fmt.Errorf("invalid class: %s", class)
-    }
+	if !domain.IsValidClass(class, classes) {
+		return fmt.Errorf("invalid class: %s", class)
+	}
 
 	return nil
 }

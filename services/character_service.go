@@ -1,12 +1,12 @@
 package services
 
 import (
-	"test/domain"
-	"test/infrastructure"
 	"fmt"
 	"math"
 	"strings"
-	)
+	"test/domain"
+	"test/infrastructure"
+)
 
 type CharacterService struct {
 	repo domain.CharacterRepository
@@ -19,22 +19,26 @@ func NewService(repo domain.CharacterRepository) *CharacterService {
 func (s *CharacterService) CreateNewCharacter(
 	name, class, race string,
 	level, str, dex, con, intel, wis, cha int,
-	) (domain.Character, error) {
+) (domain.Character, error) {
 
-	// Check for valid race
 	if err := checkRace(race); err != nil {
-        return domain.Character{}, err
-    }
+		return domain.Character{}, err
+	}
 
-	// Check for valid class
 	if err := checkClass(class); err != nil {
-        return domain.Character{}, err
-    }
-
+		return domain.Character{}, err
+	}
 
 	skills := getSkills(class)
 
-	char := domain.NewCharacter(name, race, class, level, str, dex, con, intel, wis, cha, skills)
+	abilities := domain.AbilityScores{
+		Strength:     str,
+		Dexterity:    dex,
+		Constitution: con,
+		Intelligence: intel,
+		Wisdom:       wis,
+		Charisma:     cha,
+	}
 
 	bonuses, err := infrastructure.GetRaceBonusesByName(race)
 	if err != nil {
@@ -44,30 +48,42 @@ func (s *CharacterService) CreateNewCharacter(
 	for ability, bonus := range bonuses {
 		switch strings.ToLower(ability) {
 		case "str":
-			char.Strength += bonus
+			abilities.Strength += bonus
 		case "dex":
-			char.Dexterity += bonus
+			abilities.Dexterity += bonus
 		case "con":
-			char.Constitution += bonus
+			abilities.Constitution += bonus
 		case "int":
-			char.Intelligence += bonus
+			abilities.Intelligence += bonus
 		case "wis":
-			char.Wisdom += bonus
+			abilities.Wisdom += bonus
 		case "cha":
-			char.Charisma += bonus
+			abilities.Charisma += bonus
 		}
 	}
+
+	modifiers := domain.AbilityModifiers{
+		Strength:     calculateStat(abilities.Strength),
+		Dexterity:    calculateStat(abilities.Dexterity),
+		Constitution: calculateStat(abilities.Constitution),
+		Intelligence: calculateStat(abilities.Intelligence),
+		Wisdom:       calculateStat(abilities.Wisdom),
+		Charisma:     calculateStat(abilities.Charisma),
+	}
+
+	char := domain.NewCharacter(name, race, class, level, abilities, modifiers, skills)
+
 	return s.repo.Save(char)
 }
 
-func (s *CharacterService) ViewCharacter(name string) (string) {
+func (s *CharacterService) ViewCharacter(name string) string {
 	c, err := s.repo.View(name)
 
 	if err != nil {
 		fmt.Printf(`character "%s" not found`, name)
 		return ""
 	}
-	
+
 	return formatCharacter(c)
 }
 
@@ -75,8 +91,8 @@ func (s *CharacterService) DeleteCharacter(name string) {
 	s.repo.Delete(name)
 }
 
-func formatCharacter(c domain.Character) (string) {
-
+func formatCharacter(c domain.Character) string {
+	fmt.Print(c.AbilityModifiers)
 	return fmt.Sprintf(
 		`Name: %s
 Class: %s
@@ -84,27 +100,29 @@ Race: %s
 Background: acolyte
 Level: %d
 Ability scores:
-  STR: %s
-  DEX: %s
-  CON: %s
-  INT: %s
-  WIS: %s
-  CHA: %s
+  STR: %d (%+d)
+  DEX: %d (%+d)
+  CON: %d (%+d)
+  INT: %d (%+d)
+  WIS: %d (%+d)
+  CHA: %d (%+d)
 Proficiency bonus: +2
 Skill proficiencies: %s`,
-		c.Name, strings.ToLower(c.Class), strings.ToLower(c.Race), c.Level,
-		formatStat(c.Strength), formatStat(c.Dexterity), formatStat(c.Constitution),
-		formatStat(c.Intelligence), formatStat(c.Wisdom), formatStat(c.Charisma),
+		c.Name,
+		strings.ToLower(c.Class),
+		strings.ToLower(c.Race),
+		c.Level,
+		c.AbilityScore.Strength, c.AbilityModifiers.Strength,
+		c.AbilityScore.Dexterity, c.AbilityModifiers.Dexterity,
+		c.AbilityScore.Constitution, c.AbilityModifiers.Constitution,
+		c.AbilityScore.Intelligence, c.AbilityModifiers.Intelligence,
+		c.AbilityScore.Wisdom, c.AbilityModifiers.Wisdom,
+		c.AbilityScore.Charisma, c.AbilityModifiers.Charisma,
 		c.Skills,
 	)
 }
 
-func formatStat(score int) string {
+func calculateStat(score int) int {
 	mod := int(math.Floor(float64(score-10) / 2))
-	sign := "+"
-	if mod < 0 {
-		sign = "" 
-	}
-
-	return fmt.Sprintf("%d (%s%d)", score, sign, mod)
+	return mod
 }

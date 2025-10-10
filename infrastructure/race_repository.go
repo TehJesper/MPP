@@ -4,27 +4,32 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-    "strings"
+	"strings"
 )
 
 type Race struct {
-    Index    string    `json:"index"`
-    Name     string    `json:"name"`
-    Subraces []Subrace `json:"subraces"`
-    AbilityBonuses []AbilityBonus `json:"ability_bonuses"`
+	Index          string         `json:"index"`
+	Name           string         `json:"name"`
+	Subraces       []Subrace      `json:"subraces"`
+	AbilityBonuses []AbilityBonus `json:"ability_bonuses"`
 }
 
 type AbilityBonus struct {
 	AbilityScore struct {
 		Index string `json:"index"`
+		Name  string `json:"name"`
 	} `json:"ability_score"`
 	Bonus int `json:"bonus"`
 }
 
 type Subrace struct {
-    Index string `json:"index"`
-    Name  string `json:"name"`
+	Index string `json:"index"`
+	Name  string `json:"name"`
     AbilityBonuses []AbilityBonus `json:"ability_bonuses"`
+}
+
+type RacesWrapper struct {
+	Races []Race `json:"races"`
 }
 
 func OpenRaceFile() ([]byte, error) {
@@ -32,24 +37,24 @@ func OpenRaceFile() ([]byte, error) {
 }
 
 func LoadRacesAndSubraces() ([]string, error) {
-    data, err := OpenRaceFile()
-    if err != nil {
-        return nil, err
-    }
+	data, err := OpenRaceFile()
+	if err != nil {
+		return nil, err
+	}
 
-    var races []Race
-    if err := json.Unmarshal(data, &races); err != nil {
-        return nil, err
-    }
+	var races RacesWrapper
+	if err := json.Unmarshal(data, &races); err != nil {
+		return nil, err
+	}
 
-    var all []string
-    for _, r := range races {
-        all = append(all, r.Name)
-        for _, sub := range r.Subraces {
-            all = append(all, sub.Name)
-        }
-    }
-    return all, nil
+	var all []string
+	for _, r := range races.Races {
+		all = append(all, r.Name)
+		for _, sub := range r.Subraces {
+			all = append(all, sub.Name)
+		}
+	}
+	return all, nil
 }
 
 func GetRaceBonusesByName(raceName string) (map[string]int, error) {
@@ -58,33 +63,59 @@ func GetRaceBonusesByName(raceName string) (map[string]int, error) {
 		return nil, err
 	}
 
-	var races []Race
+	var races RacesWrapper
 	if err := json.Unmarshal(data, &races); err != nil {
 		return nil, err
 	}
 
-	flat := make(map[string]Race)
-    for _, r := range races {
-        flat[strings.ToLower(r.Name)] = r
-        for _, sub := range r.Subraces {
-            flat[strings.ToLower(sub.Name)] = Race{
-                Index:          sub.Index,
-                Name:           sub.Name,
-                AbilityBonuses: sub.AbilityBonuses,
-            }
-        }
-    }
+	lowerName := strings.ToLower(raceName)
+	var foundRace *Race
+	var parentRace *Race
 
-	race, ok := flat[strings.ToLower(raceName)]
-	if !ok {
+	// Find the race or subrace
+	for _, r := range races.Races {
+		if strings.ToLower(r.Name) == lowerName {
+			// Found base race
+			foundRace = &r
+			break
+		}
+		for _, sub := range r.Subraces {
+			if strings.ToLower(sub.Name) == lowerName {
+				// Found subrace — remember parent
+				foundRace = &Race{
+					Index:          sub.Index,
+					Name:           sub.Name,
+					AbilityBonuses: sub.AbilityBonuses,
+				}
+				parentRace = &r
+				break
+			}
+		}
+		if foundRace != nil {
+			break
+		}
+	}
+
+	if foundRace == nil {
 		return nil, fmt.Errorf("race not found: %s", raceName)
 	}
 
 	bonuses := make(map[string]int)
-	for _, b := range race.AbilityBonuses {
+
+	// Add parent race bonuses first (if applicable)
+	if parentRace != nil {
+		for _, b := range parentRace.AbilityBonuses {
+			key := strings.ToLower(b.AbilityScore.Index)
+			bonuses[key] += b.Bonus
+		}
+	}
+
+	// Add found race/subrace bonuses (override or add)
+	for _, b := range foundRace.AbilityBonuses {
 		key := strings.ToLower(b.AbilityScore.Index)
-		bonuses[key] = b.Bonus
+		bonuses[key] += b.Bonus
 	}
 
 	return bonuses, nil
 }
+

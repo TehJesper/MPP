@@ -2,14 +2,16 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
+	"text/template"
 
 	"test/infrastructure"
 	"test/services"
-	"test/domain"
 
 	_ "modernc.org/sqlite"
 )
@@ -19,7 +21,7 @@ func main() {
 		fmt.Println("Usage: create | view | delete")
 		os.Exit(1)
 	}
-
+	// Init DB
 	db, err := sql.Open("sqlite", "./characters.db")
 	if err != nil {
 		log.Fatal(err)
@@ -27,25 +29,40 @@ func main() {
 	defer db.Close()
 
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS characters (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT UNIQUE,
-		race TEXT,
-		class TEXT,
-		level INTEGER,
-		strength INTEGER,
-		dexterity INTEGER,
-		constitution INTEGER,
-		intelligence INTEGER,
-		wisdom INTEGER,
-		charisma INTEGER,
-		skills TEXT
-	)`)
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name TEXT UNIQUE,
+	race TEXT,
+	class TEXT,
+	level INTEGER,
+	strength INTEGER,
+	dexterity INTEGER,
+	constitution INTEGER,
+	intelligence INTEGER,
+	wisdom INTEGER,
+	charisma INTEGER,
+	strength_mod INTEGER,
+	dexterity_mod INTEGER,
+	constitution_mod INTEGER,
+	intelligence_mod INTEGER,
+	wisdom_mod INTEGER,
+	charisma_mod INTEGER,
+	skills TEXT
+)`)
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	// Init service
 	repo := infrastructure.NewSQLRepository(db)
 	service := services.NewService(repo)
+
+	// Init API data
+	if _, err := os.Stat("classes.json"); errors.Is(err, os.ErrNotExist) {
+		infrastructure.FetchClasses()
+	}
+
+	if _, err := os.Stat("races.json"); errors.Is(err, os.ErrNotExist) {
+		infrastructure.FetchRaces()
+	}
 
 	switch os.Args[1] {
 	case "create":
@@ -80,14 +97,14 @@ func main() {
 		fmt.Println("saved character", char.Name)
 
 	case "view":
-	viewCmd := flag.NewFlagSet("view", flag.ExitOnError)
-	name := viewCmd.String("name", "", "character name to view (optional)")
-	viewCmd.Parse(os.Args[2:])
+		viewCmd := flag.NewFlagSet("view", flag.ExitOnError)
+		name := viewCmd.String("name", "", "character name to view (optional)")
+		viewCmd.Parse(os.Args[2:])
 
-	if *name != "" {
-		c := service.ViewCharacter(*name)
-		fmt.Println(c)
-	} 
+		if *name != "" {
+			c := service.ViewCharacter(*name)
+			fmt.Println(c)
+		}
 
 	case "delete":
 		viewCmd := flag.NewFlagSet("delete", flag.ExitOnError)
@@ -96,57 +113,30 @@ func main() {
 
 		service.DeleteCharacter(*name)
 		fmt.Printf("deleted %s", *name)
+	case "equip":
+		viemCmd := flag.NewFlagSet("equip", flag.ExitOnError)
+		name := viemCmd.String("name", "", "character name to equip")
+		equipment := viemCmd.String("weapon", "", "equipment to equip")
+		viemCmd.Parse(os.Args[2:])
 
+		fmt.Print(*name, *equipment)
+	case "serve":
+		fs := http.FileServer(http.Dir("./static"))
+		http.Handle("/static/", http.StripPrefix("/static/", fs))
+
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			chars, err := repo.View("hobbit2")
+			if err != nil {
+				log.Fatal(err)
+			}
+			tmpl := template.Must(template.ParseFiles("templates/list.html"))
+			tmpl.Execute(w, chars)
+		})
+
+		fmt.Println("Server running on http://localhost:8080")
+		log.Fatal(http.ListenAndServe(":8080", nil))
 	default:
 		fmt.Println("Usage: create | view | delete")
 	}
 
 }
-
-
-func formatCharacter(c domain.Character) string {
-	return fmt.Sprintf(
-		`Name: %s
-Class: %s
-Race: %s
-Background: acolyte
-Level: %d
-Ability scores:
-  STR: %d
-  DEX: %d
-  CON: %d
-  INT: %d
-  WIS: %d
-  CHA: %d
-Proficiency bonus: +2
-Skill proficiencies: %s`,
-		c.Name, c.Class, c.Race, c.Level,
-		c.Strength, c.Dexterity, c.Constitution,
-		c.Intelligence, c.Wisdom, c.Charisma,
-		c.Skills,
-	)
-}
-
-	// case "serve":
-    // // Serve static files from ./static
-    // fs := http.FileServer(http.Dir("./static"))
-    // http.Handle("/static/", http.StripPrefix("/static/", fs))
-
-    // http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	// 	// Debug
-	// 	fmt.Println(getCharacter("niets"))
-
-	// 	chars, err := getCharacter("Alice")
-	// 	if err != nil {
-    // 		log.Fatal(err) // or handle gracefully
-	// 	}
-    //     tmpl := template.Must(template.ParseFiles("templates/list.html"))
-    //     tmpl.Execute(w, chars)
-    // })
-
-    // fmt.Println("Server running on http://localhost:8080")
-    // log.Fatal(http.ListenAndServe(":8080", nil))
-
-	// }
-// }
-// }
