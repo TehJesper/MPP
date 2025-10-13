@@ -90,6 +90,15 @@ func (r *SQLRepository) View(name string) (domain.Character, error) {
 	return c, nil
 }
 
+func (r *SQLRepository) SaveEquipment(c domain.Character) error {
+	_, err := r.db.Exec(`
+		UPDATE characters
+		SET mainhand = ?, offhand = ?, shield = ?, armor = ?
+		WHERE name = ?
+	`, c.Equipment.Mainhand, c.Equipment.Offhand, c.Equipment.Shield, c.Equipment.Armor, c.Name)
+
+	return err
+}
 
 func (r *SQLRepository) Delete(name string) {
 	r.db.Exec("DELETE FROM characters WHERE name = ?", name)
