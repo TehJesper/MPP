@@ -3,11 +3,11 @@ package services
 import (
 	"fmt"
 	"test/domain"
-	"test/infrastructure"
+	cls "test/infrastructure/class"
 )
 
 func checkClass(class string) error {
-	classes, err := infrastructure.LoadClassesAndSubclasses()
+	classes, err := cls.LoadClassesAndSubclasses()
 
 	if err != nil {
 		return err

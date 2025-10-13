@@ -3,11 +3,11 @@ package services
 import (
 	"fmt"
 	"strings"
-	"test/infrastructure"
+	skl "test/infrastructure/class"
 )
 
 func getSkills(class string) string {
-	skillsSlice, err := infrastructure.LoadClassSkillsFromName(class)
+	skillsSlice, err := skl.LoadClassSkillsFromName(class)
 	if err != nil {
 		fmt.Print(err)
 	}

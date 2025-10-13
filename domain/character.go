@@ -8,6 +8,7 @@ type Character struct {
 	Level int
 	AbilityScore AbilityScores
 	AbilityModifiers AbilityModifiers
+	Equipment Equipment
 	Skills string
 }
 type AbilityScores struct {
@@ -28,6 +29,13 @@ type AbilityModifiers struct {
 	Charisma     int
 }
 
+type Equipment struct {
+	Mainhand string
+	Offhand string
+	Shield string
+	Armor string
+}
+
 func NewCharacter(
 	name, race, class string,
 	level int,
@@ -44,4 +52,21 @@ func NewCharacter(
 		AbilityModifiers: modifiers,
 		Skills:       skills,
 	}
+}
+
+func (c *Character) EquipWeapon(slot, weapon string) {
+	switch slot {
+	case "main hand", "mainhand":
+		c.Equipment.Mainhand = weapon
+	case "off hand", "offhand":
+		c.Equipment.Offhand = weapon
+	}
+}
+
+func (c *Character) EquipArmor(armor string) {
+	c.Equipment.Armor = armor
+}
+
+func (c *Character) EquipShield(shield string) {
+	c.Equipment.Shield = shield
 }

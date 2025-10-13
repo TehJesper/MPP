@@ -5,7 +5,7 @@ import (
 	"math"
 	"strings"
 	"test/domain"
-	"test/infrastructure"
+	rce "test/infrastructure/race"
 )
 
 type CharacterService struct {
@@ -40,7 +40,7 @@ func (s *CharacterService) CreateNewCharacter(
 		Charisma:     cha,
 	}
 
-	bonuses, err := infrastructure.GetRaceBonusesByName(race)
+	bonuses, err := rce.GetRaceBonusesByName(race)
 	if err != nil {
 		return domain.Character{}, err
 	}

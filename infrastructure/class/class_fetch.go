@@ -1,4 +1,4 @@
-package infrastructure
+package class
 
 import (
 	"context"
@@ -9,41 +9,43 @@ import (
 	"github.com/machinebox/graphql"
 )
 
-type AllRacesResponse struct {
-	Races []Race `json:"races"`
+type AllClassesResponse struct {
+	Classes []Class `json:"classes"`
 }
 
-func FetchRaces() {
+func FetchClasses() {
 	client := graphql.NewClient("https://www.dnd5eapi.co/graphql")
 
 	req := graphql.NewRequest(`
-query Races {
-  races {
-    name
+        query Classes {
+  classes {
     index
-    ability_bonuses {
-      bonus
-      ability_score {
-        index
-        name
-      }
+    name
+    proficiencies {
+      index
+      name
     }
-    subraces {
+    subclasses {
       name
       index
-      ability_bonuses {
-        ability_score {
-          index
-          name
+    }
+    proficiency_choices {
+      from {
+        options {
+          item {
+            ... on Proficiency {
+              name
+              index
+            }
+          }
         }
-        bonus
       }
     }
   }
 }
     `)
 
-	var respData AllRacesResponse
+	var respData AllClassesResponse
 
 	ctx := context.Background()
 	if err := client.Run(ctx, req, &respData); err != nil {
@@ -55,7 +57,7 @@ query Races {
 		log.Fatalf("JSON marshal error: %v", err)
 	}
 
-	err = os.WriteFile("races.json", outBytes, 0644)
+	err = os.WriteFile("classes.json", outBytes, 0644)
 	if err != nil {
 		log.Fatalf("Write file error: %v", err)
 	}

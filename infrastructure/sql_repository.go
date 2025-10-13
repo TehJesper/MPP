@@ -69,7 +69,8 @@ func (r *SQLRepository) View(name string) (domain.Character, error) {
 		SELECT id, name, race, class, level,
 		       strength, dexterity, constitution, intelligence, wisdom, charisma,
 		       strength_mod, dexterity_mod, constitution_mod, intelligence_mod, wisdom_mod, charisma_mod,
-		       skills
+		       skills,
+			   mainhand, offhand, shield, armor
 		FROM characters
 		WHERE name = ?`, name)
 
@@ -80,6 +81,7 @@ func (r *SQLRepository) View(name string) (domain.Character, error) {
 		&c.AbilityModifiers.Strength, &c.AbilityModifiers.Dexterity, &c.AbilityModifiers.Constitution,
 		&c.AbilityModifiers.Intelligence, &c.AbilityModifiers.Wisdom, &c.AbilityModifiers.Charisma,
 		&c.Skills,
+		&c.Equipment.Mainhand, &c.Equipment.Offhand, &c.Equipment.Shield, &c.Equipment.Armor,
 	)
 	if err != nil {
 		return c, err
@@ -92,3 +94,4 @@ func (r *SQLRepository) View(name string) (domain.Character, error) {
 func (r *SQLRepository) Delete(name string) {
 	r.db.Exec("DELETE FROM characters WHERE name = ?", name)
 }
+

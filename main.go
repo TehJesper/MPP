@@ -11,6 +11,8 @@ import (
 	"text/template"
 
 	"test/infrastructure"
+	"test/infrastructure/class"
+	"test/infrastructure/race"
 	"test/services"
 
 	_ "modernc.org/sqlite"
@@ -46,7 +48,11 @@ func main() {
 	intelligence_mod INTEGER,
 	wisdom_mod INTEGER,
 	charisma_mod INTEGER,
-	skills TEXT
+	skills TEXT,
+	mainhand TEXT,
+	offhand TEXT,
+	shield TEXT,
+	armor TEXT
 )`)
 	if err != nil {
 		log.Fatal(err)
@@ -57,11 +63,11 @@ func main() {
 
 	// Init API data
 	if _, err := os.Stat("classes.json"); errors.Is(err, os.ErrNotExist) {
-		infrastructure.FetchClasses()
+		class.FetchClasses()
 	}
 
 	if _, err := os.Stat("races.json"); errors.Is(err, os.ErrNotExist) {
-		infrastructure.FetchRaces()
+		race.FetchRaces()
 	}
 
 	switch os.Args[1] {
@@ -108,7 +114,7 @@ func main() {
 
 	case "delete":
 		viewCmd := flag.NewFlagSet("delete", flag.ExitOnError)
-		name := viewCmd.String("name", "", "character name to view (optional)")
+		name := viewCmd.String("name", "", "character name to delete")
 		viewCmd.Parse(os.Args[2:])
 
 		service.DeleteCharacter(*name)
@@ -116,16 +122,28 @@ func main() {
 	case "equip":
 		viemCmd := flag.NewFlagSet("equip", flag.ExitOnError)
 		name := viemCmd.String("name", "", "character name to equip")
-		equipment := viemCmd.String("weapon", "", "equipment to equip")
+		weapon := viemCmd.String("weapon", "", "equipment to equip")
+		shield := viemCmd.String("shield", "", "shield to equip")
+		armor := viemCmd.String("armor", "", "armor to equip")
+		slot := viemCmd.String("slot", "", "slot to equip")
 		viemCmd.Parse(os.Args[2:])
 
-		fmt.Print(*name, *equipment)
+		err := service.EquipCharacter(*name, *weapon, *slot, *armor, *shield)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+
 	case "serve":
+		viemCmd := flag.NewFlagSet("serve", flag.ExitOnError)
+		name := viemCmd.String("name", "", "character name to view")
+		viemCmd.Parse(os.Args[2:])
+
 		fs := http.FileServer(http.Dir("./static"))
 		http.Handle("/static/", http.StripPrefix("/static/", fs))
 
 		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			chars, err := repo.View("hobbit2")
+			chars, err := repo.View(*name)
 			if err != nil {
 				log.Fatal(err)
 			}

@@ -1,4 +1,4 @@
-package infrastructure
+package race
 
 import (
 	"encoding/json"

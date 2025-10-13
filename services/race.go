@@ -1,12 +1,12 @@
 package services
 import (
 	"test/domain"
-	"test/infrastructure"
+	rce "test/infrastructure/race"
 	"fmt"
 )
 
 func checkRace(race string) (error) {
-	races, err := infrastructure.LoadRacesAndSubraces()
+	races, err := rce.LoadRacesAndSubraces()
 
     if err != nil {
         return err
