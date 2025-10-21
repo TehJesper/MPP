@@ -134,6 +134,16 @@ func main() {
 			return
 		}
 
+		if *weapon != "" {
+			fmt.Print("Equipped weapon ", *weapon, " to ", *slot)
+		}
+		if *shield != "" {
+			fmt.Print("Equipped shield ", *shield)
+		}
+		if *armor != "" {
+			fmt.Print("Equipped armor ", *armor)
+		}
+
 	case "serve":
 		viemCmd := flag.NewFlagSet("serve", flag.ExitOnError)
 		name := viemCmd.String("name", "", "character name to view")

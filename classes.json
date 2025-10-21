@@ -11,49 +11,40 @@
       ],
       "proficiency_choices": [
         {
-          "desc": "",
-          "choose": 0,
-          "type": "",
+          "choose": 2,
           "from": {
-            "option_set_type": "",
             "options": [
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-animal-handling",
                   "name": "Skill: Animal Handling"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-athletics",
                   "name": "Skill: Athletics"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-intimidation",
                   "name": "Skill: Intimidation"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-nature",
                   "name": "Skill: Nature"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-perception",
                   "name": "Skill: Perception"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-survival",
                   "name": "Skill: Survival"
@@ -75,133 +66,112 @@
       ],
       "proficiency_choices": [
         {
-          "desc": "",
-          "choose": 0,
-          "type": "",
+          "choose": 3,
           "from": {
-            "option_set_type": "",
             "options": [
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-acrobatics",
                   "name": "Skill: Acrobatics"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-animal-handling",
                   "name": "Skill: Animal Handling"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-arcana",
                   "name": "Skill: Arcana"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-athletics",
                   "name": "Skill: Athletics"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-deception",
                   "name": "Skill: Deception"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-history",
                   "name": "Skill: History"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-insight",
                   "name": "Skill: Insight"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-intimidation",
                   "name": "Skill: Intimidation"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-investigation",
                   "name": "Skill: Investigation"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-medicine",
                   "name": "Skill: Medicine"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-nature",
                   "name": "Skill: Nature"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-perception",
                   "name": "Skill: Perception"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-performance",
                   "name": "Skill: Performance"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-persuasion",
                   "name": "Skill: Persuasion"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-religion",
                   "name": "Skill: Religion"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-sleight-of-hand",
                   "name": "Skill: Sleight of Hand"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-stealth",
                   "name": "Skill: Stealth"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-survival",
                   "name": "Skill: Survival"
@@ -211,77 +181,64 @@
           }
         },
         {
-          "desc": "",
-          "choose": 0,
-          "type": "",
+          "choose": 3,
           "from": {
-            "option_set_type": "",
             "options": [
               {
-                "option_type": "",
                 "item": {
                   "index": "bagpipes",
                   "name": "Bagpipes"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "drum",
                   "name": "Drum"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "dulcimer",
                   "name": "Dulcimer"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "flute",
                   "name": "Flute"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "lute",
                   "name": "Lute"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "lyre",
                   "name": "Lyre"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "horn",
                   "name": "Horn"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "pan-flute",
                   "name": "Pan flute"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "shawm",
                   "name": "Shawm"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "viol",
                   "name": "Viol"
@@ -303,42 +260,34 @@
       ],
       "proficiency_choices": [
         {
-          "desc": "",
-          "choose": 0,
-          "type": "",
+          "choose": 2,
           "from": {
-            "option_set_type": "",
             "options": [
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-history",
                   "name": "Skill: History"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-insight",
                   "name": "Skill: Insight"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-medicine",
                   "name": "Skill: Medicine"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-persuasion",
                   "name": "Skill: Persuasion"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-religion",
                   "name": "Skill: Religion"
@@ -360,63 +309,52 @@
       ],
       "proficiency_choices": [
         {
-          "desc": "",
-          "choose": 0,
-          "type": "",
+          "choose": 2,
           "from": {
-            "option_set_type": "",
             "options": [
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-arcana",
                   "name": "Skill: Arcana"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-animal-handling",
                   "name": "Skill: Animal Handling"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-insight",
                   "name": "Skill: Insight"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-medicine",
                   "name": "Skill: Medicine"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-nature",
                   "name": "Skill: Nature"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-perception",
                   "name": "Skill: Perception"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-religion",
                   "name": "Skill: Religion"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-survival",
                   "name": "Skill: Survival"
@@ -438,63 +376,52 @@
       ],
       "proficiency_choices": [
         {
-          "desc": "",
-          "choose": 0,
-          "type": "",
+          "choose": 2,
           "from": {
-            "option_set_type": "",
             "options": [
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-acrobatics",
                   "name": "Skill: Acrobatics"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-animal-handling",
                   "name": "Skill: Animal Handling"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-athletics",
                   "name": "Skill: Athletics"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-history",
                   "name": "Skill: History"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-insight",
                   "name": "Skill: Insight"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-intimidation",
                   "name": "Skill: Intimidation"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-perception",
                   "name": "Skill: Perception"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-survival",
                   "name": "Skill: Survival"
@@ -516,49 +443,40 @@
       ],
       "proficiency_choices": [
         {
-          "desc": "",
-          "choose": 0,
-          "type": "",
+          "choose": 2,
           "from": {
-            "option_set_type": "",
             "options": [
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-acrobatics",
                   "name": "Skill: Acrobatics"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-athletics",
                   "name": "Skill: Athletics"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-history",
                   "name": "Skill: History"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-insight",
                   "name": "Skill: Insight"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-religion",
                   "name": "Skill: Religion"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-stealth",
                   "name": "Skill: Stealth"
@@ -568,21 +486,16 @@
           }
         },
         {
-          "desc": "",
-          "choose": 0,
-          "type": "",
+          "choose": 1,
           "from": {
-            "option_set_type": "",
             "options": [
               {
-                "option_type": "",
                 "item": {
                   "index": "",
                   "name": ""
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "",
                   "name": ""
@@ -604,49 +517,40 @@
       ],
       "proficiency_choices": [
         {
-          "desc": "",
-          "choose": 0,
-          "type": "",
+          "choose": 2,
           "from": {
-            "option_set_type": "",
             "options": [
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-athletics",
                   "name": "Skill: Athletics"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-insight",
                   "name": "Skill: Insight"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-intimidation",
                   "name": "Skill: Intimidation"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-medicine",
                   "name": "Skill: Medicine"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-persuasion",
                   "name": "Skill: Persuasion"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-religion",
                   "name": "Skill: Religion"
@@ -668,63 +572,52 @@
       ],
       "proficiency_choices": [
         {
-          "desc": "",
-          "choose": 0,
-          "type": "",
+          "choose": 3,
           "from": {
-            "option_set_type": "",
             "options": [
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-animal-handling",
                   "name": "Skill: Animal Handling"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-athletics",
                   "name": "Skill: Athletics"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-insight",
                   "name": "Skill: Insight"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-investigation",
                   "name": "Skill: Investigation"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-nature",
                   "name": "Skill: Nature"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-perception",
                   "name": "Skill: Perception"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-stealth",
                   "name": "Skill: Stealth"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-survival",
                   "name": "Skill: Survival"
@@ -746,84 +639,70 @@
       ],
       "proficiency_choices": [
         {
-          "desc": "",
-          "choose": 0,
-          "type": "",
+          "choose": 4,
           "from": {
-            "option_set_type": "",
             "options": [
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-acrobatics",
                   "name": "Skill: Acrobatics"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-athletics",
                   "name": "Skill: Athletics"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-deception",
                   "name": "Skill: Deception"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-insight",
                   "name": "Skill: Insight"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-intimidation",
                   "name": "Skill: Intimidation"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-investigation",
                   "name": "Skill: Investigation"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-perception",
                   "name": "Skill: Perception"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-performance",
                   "name": "Skill: Performance"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-persuasion",
                   "name": "Skill: Persuasion"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-sleight-of-hand",
                   "name": "Skill: Sleight of Hand"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-stealth",
                   "name": "Skill: Stealth"
@@ -845,49 +724,40 @@
       ],
       "proficiency_choices": [
         {
-          "desc": "",
-          "choose": 0,
-          "type": "",
+          "choose": 2,
           "from": {
-            "option_set_type": "",
             "options": [
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-arcana",
                   "name": "Skill: Arcana"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-deception",
                   "name": "Skill: Deception"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-insight",
                   "name": "Skill: Insight"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-intimidation",
                   "name": "Skill: Intimidation"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-persuasion",
                   "name": "Skill: Persuasion"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-religion",
                   "name": "Skill: Religion"
@@ -909,56 +779,46 @@
       ],
       "proficiency_choices": [
         {
-          "desc": "",
-          "choose": 0,
-          "type": "",
+          "choose": 2,
           "from": {
-            "option_set_type": "",
             "options": [
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-arcana",
                   "name": "Skill: Arcana"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-deception",
                   "name": "Skill: Deception"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-history",
                   "name": "Skill: History"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-intimidation",
                   "name": "Skill: Intimidation"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-investigation",
                   "name": "Skill: Investigation"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-nature",
                   "name": "Skill: Nature"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-religion",
                   "name": "Skill: Religion"
@@ -980,49 +840,40 @@
       ],
       "proficiency_choices": [
         {
-          "desc": "",
-          "choose": 0,
-          "type": "",
+          "choose": 2,
           "from": {
-            "option_set_type": "",
             "options": [
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-arcana",
                   "name": "Skill: Arcana"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-history",
                   "name": "Skill: History"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-insight",
                   "name": "Skill: Insight"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-investigation",
                   "name": "Skill: Investigation"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-medicine",
                   "name": "Skill: Medicine"
                 }
               },
               {
-                "option_type": "",
                 "item": {
                   "index": "skill-religion",
                   "name": "Skill: Religion"

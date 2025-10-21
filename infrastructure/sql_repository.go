@@ -64,7 +64,7 @@ func (r *SQLRepository) Save(c domain.Character) (domain.Character, error) {
 
 func (r *SQLRepository) View(name string) (domain.Character, error) {
 	var c domain.Character
-
+	var mainhand, offhand, shield, armor sql.NullString
 	row := r.db.QueryRow(`
 		SELECT id, name, race, class, level,
 		       strength, dexterity, constitution, intelligence, wisdom, charisma,
@@ -81,12 +81,24 @@ func (r *SQLRepository) View(name string) (domain.Character, error) {
 		&c.AbilityModifiers.Strength, &c.AbilityModifiers.Dexterity, &c.AbilityModifiers.Constitution,
 		&c.AbilityModifiers.Intelligence, &c.AbilityModifiers.Wisdom, &c.AbilityModifiers.Charisma,
 		&c.Skills,
-		&c.Equipment.Mainhand, &c.Equipment.Offhand, &c.Equipment.Shield, &c.Equipment.Armor,
+		&mainhand, &offhand, &shield, &armor,
+		// &c.Equipment.Mainhand, &c.Equipment.Offhand, &c.Equipment.Shield, &c.Equipment.Armor,
 	)
 	if err != nil {
 		return c, err
 	}
-
+	if mainhand.Valid {
+		c.Equipment.Mainhand = mainhand.String
+	}
+	if offhand.Valid {
+		c.Equipment.Offhand = offhand.String
+	}
+	if shield.Valid {
+		c.Equipment.Shield = shield.String
+	}
+	if armor.Valid {
+		c.Equipment.Armor = armor.String
+	}
 	return c, nil
 }
 

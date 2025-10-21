@@ -72,16 +72,13 @@ func GetRaceBonusesByName(raceName string) (map[string]int, error) {
 	var foundRace *Race
 	var parentRace *Race
 
-	// Find the race or subrace
 	for _, r := range races.Races {
 		if strings.ToLower(r.Name) == lowerName {
-			// Found base race
 			foundRace = &r
 			break
 		}
 		for _, sub := range r.Subraces {
 			if strings.ToLower(sub.Name) == lowerName {
-				// Found subrace — remember parent
 				foundRace = &Race{
 					Index:          sub.Index,
 					Name:           sub.Name,
@@ -102,7 +99,6 @@ func GetRaceBonusesByName(raceName string) (map[string]int, error) {
 
 	bonuses := make(map[string]int)
 
-	// Add parent race bonuses first (if applicable)
 	if parentRace != nil {
 		for _, b := range parentRace.AbilityBonuses {
 			key := strings.ToLower(b.AbilityScore.Index)
@@ -110,7 +106,6 @@ func GetRaceBonusesByName(raceName string) (map[string]int, error) {
 		}
 	}
 
-	// Add found race/subrace bonuses (override or add)
 	for _, b := range foundRace.AbilityBonuses {
 		key := strings.ToLower(b.AbilityScore.Index)
 		bonuses[key] += b.Bonus

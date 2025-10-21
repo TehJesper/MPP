@@ -35,3 +35,5 @@ go.work.sum
 # .vscode/
 # json files
 *.json
+# zip files
+*.zip

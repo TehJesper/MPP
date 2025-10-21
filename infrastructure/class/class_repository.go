@@ -14,19 +14,15 @@ type Class struct {
 }
 
 type ProficiencyChoice struct {
-	Desc   string `json:"desc"`
 	Choose int    `json:"choose"`
-	Type   string `json:"type"`
 	From   From   `json:"from"`
 }
 
 type From struct {
-	OptionSetType string   `json:"option_set_type"`
 	Options       []Option `json:"options"`
 }
 
 type Option struct {
-	OptionType string `json:"option_type"`
 	Item       Item   `json:"item"`
 }
 
@@ -72,31 +68,31 @@ func LoadClassesAndSubclasses() ([]string, error) {
 	return all, nil
 }
 
-func LoadClassSkillsFromName(name string) ([]string, error) {
+func LoadClassSkillsFromName(name string) ([]string, int, error) {
 	data, err := OpenClassFile()
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	var classes ClassesWrapper
 	if err := json.Unmarshal(data, &classes); err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	nameLower := strings.ToLower(name)
 
 	for _, c := range classes.Classes {
 		if strings.ToLower(c.Name) == nameLower {
-			return extractSkills(c), nil
+			return extractSkills(c), c.ProficiencyChoices[0].Choose, nil
 		}
 		for _, sc := range c.Subclasses {
 			if strings.ToLower(sc.Name) == nameLower {
-				return extractSkills(c), nil
+				return extractSkills(c), c.ProficiencyChoices[0].Choose, nil
 			}
 		}
 	}
 
-	return nil, nil
+	return nil, 0, nil
 }
 
 func extractSkills(c Class) []string {

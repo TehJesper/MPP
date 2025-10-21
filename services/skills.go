@@ -7,13 +7,13 @@ import (
 )
 
 func getSkills(class string) string {
-	skillsSlice, err := skl.LoadClassSkillsFromName(class)
+	skillsSlice, amount,  err := skl.LoadClassSkillsFromName(class)
 	if err != nil {
 		fmt.Print(err)
 	}
 
-	if len(skillsSlice) > 2 {
-		skillsSlice = skillsSlice[:2]
+	if len(skillsSlice) > amount {
+		skillsSlice = skillsSlice[:amount]
 	}
 	// Default acolyte skills
 	skillsSlice = append(skillsSlice, "Insight", "Religion")

@@ -92,8 +92,7 @@ func (s *CharacterService) DeleteCharacter(name string) {
 }
 
 func formatCharacter(c domain.Character) string {
-	fmt.Print(c.AbilityModifiers)
-	return fmt.Sprintf(
+	base := fmt.Sprintf(
 		`Name: %s
 Class: %s
 Race: %s
@@ -120,6 +119,20 @@ Skill proficiencies: %s`,
 		c.AbilityScore.Charisma, c.AbilityModifiers.Charisma,
 		c.Skills,
 	)
+	if c.Equipment.Mainhand != "" {
+		base += fmt.Sprintf("\nMain hand: %s", c.Equipment.Mainhand)
+	}
+	if c.Equipment.Offhand != "" {
+		base += fmt.Sprintf("\nOff hand: %s", c.Equipment.Offhand)
+	}
+	if c.Equipment.Armor != "" {
+		base += fmt.Sprintf("\nArmor: %s", c.Equipment.Armor)
+	}
+	if c.Equipment.Shield != "" {
+		base += fmt.Sprintf("\nShield: %s", c.Equipment.Shield)
+	}
+
+	return base
 }
 
 func calculateStat(score int) int {

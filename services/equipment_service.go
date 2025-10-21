@@ -11,19 +11,38 @@ func (s *CharacterService) EquipCharacter(
 	}
 
 	if weapon != "" && slot != "" {
-		char.EquipWeapon(slot, weapon)
+		switch slot {
+		case "main hand":
+			if char.Equipment.Mainhand != "" {
+				fmt.Printf("%s already occupied", slot)
+			}
+			char.EquipWeapon(slot, weapon)
+		case "off hand":
+			if char.Equipment.Offhand != "" {
+				fmt.Printf("%s already occupied", slot)
+			}
+			char.EquipWeapon(slot, weapon)
+		default:
+			fmt.Printf("invalid slot: %s", slot)
+		}
 	}
 
 	if armor != "" {
+		if char.Equipment.Armor != "" {
+			fmt.Print("armor already equipped")
+		}
 		char.EquipArmor(armor)
 	}
 
 	if shield != "" {
+		if char.Equipment.Shield != "" {
+			fmt.Print("shield already equipped")
+		}
 		char.EquipShield(shield)
 	}
 
 	if err := s.repo.SaveEquipment(char); err != nil {
-    	return fmt.Errorf("failed to save equipment: %w", err)
+    	fmt.Print("failed to save equipment: %w", err)
 	}
 
 	return nil

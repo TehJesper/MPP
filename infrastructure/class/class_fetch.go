@@ -30,17 +30,18 @@ func FetchClasses() {
       index
     }
     proficiency_choices {
+      choose  
       from {
-        options {
-          item {
-            ... on Proficiency {
-              name
-              index
+          options {
+            item {
+              ... on Proficiency {
+                name
+                index
+              }
             }
           }
         }
       }
-    }
   }
 }
     `)
