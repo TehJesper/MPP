@@ -17,7 +17,7 @@ func FetchClasses() {
 	client := graphql.NewClient("https://www.dnd5eapi.co/graphql")
 
 	req := graphql.NewRequest(`
-        query Classes {
+query Classes {
   classes {
     index
     name
@@ -30,18 +30,36 @@ func FetchClasses() {
       index
     }
     proficiency_choices {
-      choose  
       from {
-          options {
-            item {
-              ... on Proficiency {
-                name
-                index
-              }
+        options {
+          item {
+            ... on Proficiency {
+              name
+              index
             }
           }
         }
       }
+      choose
+    }
+    spells {
+      name
+      level
+    }
+    class_levels {
+      spellcasting {
+        cantrips_known
+        spell_slots_level_1
+        spell_slots_level_2
+        spell_slots_level_3
+        spell_slots_level_4
+        spell_slots_level_5
+        spell_slots_level_6
+        spell_slots_level_7
+        spell_slots_level_8
+        spell_slots_level_9
+      }
+    }
   }
 }
     `)

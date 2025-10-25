@@ -37,6 +37,7 @@ func (r *SQLRepository) Save(c domain.Character) (domain.Character, error) {
 		c.Race,
 		c.Class,
 		c.Level,
+		c.ProficiencyBonus,
 	}
 	args = append(args, abilities...)
 	args = append(args, modifiers...)
@@ -45,12 +46,12 @@ func (r *SQLRepository) Save(c domain.Character) (domain.Character, error) {
 	res, err := r.db.Exec(`
 		INSERT INTO characters
 		(
-			name, race, class, level, 
+			name, race, class, level, proficiency_bonus, 
 			strength, dexterity, constitution, intelligence, wisdom, charisma,
 			strength_mod, dexterity_mod, constitution_mod, intelligence_mod, wisdom_mod, charisma_mod,
 			skills
 		)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`, args...)
 	if err != nil {
 		return c, err
@@ -66,7 +67,7 @@ func (r *SQLRepository) View(name string) (domain.Character, error) {
 	var c domain.Character
 	var mainhand, offhand, shield, armor sql.NullString
 	row := r.db.QueryRow(`
-		SELECT id, name, race, class, level,
+		SELECT id, name, race, class, level, proficiency_bonus,
 		       strength, dexterity, constitution, intelligence, wisdom, charisma,
 		       strength_mod, dexterity_mod, constitution_mod, intelligence_mod, wisdom_mod, charisma_mod,
 		       skills,
@@ -75,7 +76,7 @@ func (r *SQLRepository) View(name string) (domain.Character, error) {
 		WHERE name = ?`, name)
 
 	err := row.Scan(
-		&c.ID, &c.Name, &c.Race, &c.Class, &c.Level,
+		&c.ID, &c.Name, &c.Race, &c.Class, &c.Level, &c.ProficiencyBonus,
 		&c.AbilityScore.Strength, &c.AbilityScore.Dexterity, &c.AbilityScore.Constitution,
 		&c.AbilityScore.Intelligence, &c.AbilityScore.Wisdom, &c.AbilityScore.Charisma,
 		&c.AbilityModifiers.Strength, &c.AbilityModifiers.Dexterity, &c.AbilityModifiers.Constitution,

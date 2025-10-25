@@ -6,6 +6,7 @@ type Character struct {
 	Race  string
 	Class string
 	Level int
+	ProficiencyBonus int
 	AbilityScore AbilityScores
 	AbilityModifiers AbilityModifiers
 	Equipment Equipment
@@ -38,7 +39,7 @@ type Equipment struct {
 
 func NewCharacter(
 	name, race, class string,
-	level int,
+	level, proficiencybonus int,
 	abilities AbilityScores,
 	modifiers AbilityModifiers,
 	skills string,
@@ -48,6 +49,7 @@ func NewCharacter(
 		Race:         race,
 		Class:        class,
 		Level:        level,
+		ProficiencyBonus: proficiencybonus,
 		AbilityScore: abilities,
 		AbilityModifiers: modifiers,
 		Skills:       skills,
@@ -70,3 +72,4 @@ func (c *Character) EquipArmor(armor string) {
 func (c *Character) EquipShield(shield string) {
 	c.Equipment.Shield = shield
 }
+

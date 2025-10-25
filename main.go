@@ -8,21 +8,63 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
 	"text/template"
 
 	"test/infrastructure"
 	"test/infrastructure/class"
 	"test/infrastructure/race"
+	"test/infrastructure/spells"
+	"test/infrastructure/equipment"
 	"test/services"
 
 	_ "modernc.org/sqlite"
 )
 
+func initAPIData() {
+	var wg sync.WaitGroup
+	wg.Add(4)
+
+	go func() {
+		defer wg.Done()
+		if _, err := os.Stat("classes.json"); errors.Is(err, os.ErrNotExist) {
+			class.FetchClasses()
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
+		if _, err := os.Stat("races.json"); errors.Is(err, os.ErrNotExist) {
+			race.FetchRaces()
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
+		if _, err := os.Stat("spells.json"); errors.Is(err, os.ErrNotExist) {
+			spells.FetchSpells()
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
+		if _, err := os.Stat("equipment.json"); errors.Is(err, os.ErrNotExist) {
+			equipment.FetchEquipment()
+		}
+	}()
+
+	wg.Wait()
+}
+
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: create | view | delete")
+		fmt.Println("Usage: create | view | delete | equip | serve | prepare-spell | learn-spell")
 		os.Exit(1)
 	}
+
+	// Init API data
+	initAPIData()
+
 	// Init DB
 	db, err := sql.Open("sqlite", "./characters.db")
 	if err != nil {
@@ -36,6 +78,7 @@ func main() {
 	race TEXT,
 	class TEXT,
 	level INTEGER,
+	proficiency_bonus INTEGER,
 	strength INTEGER,
 	dexterity INTEGER,
 	constitution INTEGER,
@@ -60,15 +103,6 @@ func main() {
 	// Init service
 	repo := infrastructure.NewSQLRepository(db)
 	service := services.NewService(repo)
-
-	// Init API data
-	if _, err := os.Stat("classes.json"); errors.Is(err, os.ErrNotExist) {
-		class.FetchClasses()
-	}
-
-	if _, err := os.Stat("races.json"); errors.Is(err, os.ErrNotExist) {
-		race.FetchRaces()
-	}
 
 	switch os.Args[1] {
 	case "create":
@@ -163,8 +197,30 @@ func main() {
 
 		fmt.Println("Server running on http://localhost:8080")
 		log.Fatal(http.ListenAndServe(":8080", nil))
+
+	// prepare-spell
+	case "prepare-spell":
+	viemCmd := flag.NewFlagSet("prepare-spell", flag.ExitOnError)
+	spell := viemCmd.String("spell", "", "spell to prepare")
+	name := viemCmd.String("name", "", "character name to view")
+
+	viemCmd.Parse(os.Args[2:])
+
+	service.PrepareSpell(*name, *spell)
+	// fmt.Print("Prepared spell ", *spell)
+
+	// learn-spell
+	case "learn-spell":
+	viemCmd := flag.NewFlagSet("learn-spell", flag.ExitOnError)
+	spell := viemCmd.String("spell", "", "spell to learn")
+	name := viemCmd.String("name", "", "character name to view")
+
+	viemCmd.Parse(os.Args[2:])
+
+	service.LearnSpell(*name, *spell)
+
 	default:
-		fmt.Println("Usage: create | view | delete")
+		fmt.Println("Usage: create | view | delete | equip | serve | prepare-spell | learn-spell")
 	}
 
 }
