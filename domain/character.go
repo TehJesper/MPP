@@ -11,6 +11,9 @@ type Character struct {
 	AbilityModifiers AbilityModifiers
 	Equipment Equipment
 	Skills string
+	ArmorClass        int
+    Initiative        int
+    PassivePerception int
 }
 type AbilityScores struct {
 	Strength     int

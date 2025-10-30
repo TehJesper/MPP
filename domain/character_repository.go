@@ -5,4 +5,5 @@ type CharacterRepository interface {
 	View(name string) (Character, error)
 	Delete(name string)
 	SaveEquipment(c Character) error
+	UpdateDerivedStats(c Character, ac int, initiative int, passive int) error
 }

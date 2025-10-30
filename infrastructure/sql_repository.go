@@ -83,7 +83,6 @@ func (r *SQLRepository) View(name string) (domain.Character, error) {
 		&c.AbilityModifiers.Intelligence, &c.AbilityModifiers.Wisdom, &c.AbilityModifiers.Charisma,
 		&c.Skills,
 		&mainhand, &offhand, &shield, &armor,
-		// &c.Equipment.Mainhand, &c.Equipment.Offhand, &c.Equipment.Shield, &c.Equipment.Armor,
 	)
 	if err != nil {
 		return c, err
@@ -117,3 +116,11 @@ func (r *SQLRepository) Delete(name string) {
 	r.db.Exec("DELETE FROM characters WHERE name = ?", name)
 }
 
+func (r *SQLRepository) UpdateDerivedStats(c domain.Character, ac, initiative, passive int) error {
+	_, err := r.db.Exec(`
+		UPDATE characters
+		SET armor_class = ?, initiative = ?, passive_perception = ?
+		WHERE name = ?
+	`, ac, initiative, passive, c.Name)
+	return err
+}

@@ -180,13 +180,10 @@ func GetSpellcastingForClassAndLevel(name string, level int) (*Spellcasting, err
 
 	for _, c := range wrapper.Classes {
 		if strings.ToLower(c.Name) == nameLower || strings.ToLower(c.Index) == nameLower {
-			// Protect against invalid levels
 			if level <= 0 || level > len(c.ClassLevel) {
 				fmt.Print("the spell has higher level than the available spell slots")
 				return nil, nil
 			}
-
-			// The D&D 5e API uses level-1 indexing in arrays
 			classLevel := c.ClassLevel[level-1]
 			if classLevel.Spellcasting != nil {
 				return classLevel.Spellcasting, nil
@@ -203,7 +200,7 @@ func GetHighestSpellSlotForClassAndLevel(name string, level int) (int, error) {
 		return 0, err
 	}
 	if sc == nil {
-		return 0, nil // no spellcasting at all
+		return 0, nil
 	}
 
 	switch {
@@ -226,7 +223,7 @@ func GetHighestSpellSlotForClassAndLevel(name string, level int) (int, error) {
 	case sc.SpellSlotsLevel1 > 0:
 		return 1, nil
 	case sc.SpellSlotsLevel0 > 0:
-		return 0, nil // cantrips
+		return 0, nil
 	default:
 		return 0, nil
 	}

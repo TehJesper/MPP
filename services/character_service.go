@@ -5,8 +5,9 @@ import (
 	"math"
 	"strings"
 	"test/domain"
-	rce "test/infrastructure/race"
 	cls "test/infrastructure/class"
+	rce "test/infrastructure/race"
+	eqp "test/infrastructure/equipment"
 )
 
 type CharacterService struct {
@@ -94,21 +95,25 @@ func (s *CharacterService) CreateNewCharacter(
 }
 
 func (s *CharacterService) ViewCharacter(name string) string {
-	c, err := s.repo.View(name)
+    c, err := s.repo.View(name)
+    if err != nil {
+        fmt.Printf(`character "%s" not found`, name)
+        return ""
+    }
 
-	if err != nil {
-		fmt.Printf(`character "%s" not found`, name)
-		return ""
-	}
+    repo := eqp.EquipmentRepository{
+        FilePath: "5e-SRD-Equipment.json",
+    }
+    eqService := EquipmentService{Repo: repo}
 
-	return formatCharacter(c)
+    return s.formatCharacter(c, eqService)
 }
 
 func (s *CharacterService) DeleteCharacter(name string) {
 	s.repo.Delete(name)
 }
 
-func formatCharacter(c domain.Character) string {
+func (s *CharacterService) formatCharacter(c domain.Character, eqService EquipmentService) string {
 	base := fmt.Sprintf(
 		`Name: %s
 Class: %s
@@ -156,46 +161,85 @@ if err != nil {
 }
 
 if canCast {
-	spellcasting, err := cls.GetSpellcastingForClassAndLevel(c.Class, c.Level)
-	if err == nil && spellcasting != nil {
-		spellSlotOutput := "\nSpell slots:"
+    spellcasting, err := cls.GetSpellcastingForClassAndLevel(c.Class, c.Level)
+    if err == nil && spellcasting != nil {
+        // Collect non-zero spell slots
+        slots := []string{}
+        if spellcasting.SpellSlotsLevel0 > 0 {
+            slots = append(slots, fmt.Sprintf("  Level 0: %d", spellcasting.SpellSlotsLevel0))
+        }
+        if spellcasting.SpellSlotsLevel1 > 0 {
+            slots = append(slots, fmt.Sprintf("  Level 1: %d", spellcasting.SpellSlotsLevel1))
+        }
+        if spellcasting.SpellSlotsLevel2 > 0 {
+            slots = append(slots, fmt.Sprintf("  Level 2: %d", spellcasting.SpellSlotsLevel2))
+        }
+        if spellcasting.SpellSlotsLevel3 > 0 {
+            slots = append(slots, fmt.Sprintf("  Level 3: %d", spellcasting.SpellSlotsLevel3))
+        }
+        if spellcasting.SpellSlotsLevel4 > 0 {
+            slots = append(slots, fmt.Sprintf("  Level 4: %d", spellcasting.SpellSlotsLevel4))
+        }
+        if spellcasting.SpellSlotsLevel5 > 0 {
+            slots = append(slots, fmt.Sprintf("  Level 5: %d", spellcasting.SpellSlotsLevel5))
+        }
+        if spellcasting.SpellSlotsLevel6 > 0 {
+            slots = append(slots, fmt.Sprintf("  Level 6: %d", spellcasting.SpellSlotsLevel6))
+        }
+        if spellcasting.SpellSlotsLevel7 > 0 {
+            slots = append(slots, fmt.Sprintf("  Level 7: %d", spellcasting.SpellSlotsLevel7))
+        }
+        if spellcasting.SpellSlotsLevel8 > 0 {
+            slots = append(slots, fmt.Sprintf("  Level 8: %d", spellcasting.SpellSlotsLevel8))
+        }
+        if spellcasting.SpellSlotsLevel9 > 0 {
+            slots = append(slots, fmt.Sprintf("  Level 9: %d", spellcasting.SpellSlotsLevel9))
+        }
+		var SpellcastingAbilityByClass = map[string]string{
+			"bard": "charisma",
+			"cleric": "wisdom",
+			"druid": "wisdom",
+			"paladin": "charisma",
+			"ranger": "wisdom",
+			"sorcerer": "charisma",
+			"warlock": "charisma",
+			"wizard": "intelligence",
+			"artificer": "intelligence",
+		}
+		  abilityName := SpellcastingAbilityByClass[strings.ToLower(c.Class)]
+		var abilityMod int
 
-		if spellcasting.SpellSlotsLevel0 > 0 {
-			spellSlotOutput += fmt.Sprintf("\n  Level 0: %d", spellcasting.SpellSlotsLevel0)
-		}
-		if spellcasting.SpellSlotsLevel1 > 0 {
-			spellSlotOutput += fmt.Sprintf("\n  Level 1: %d", spellcasting.SpellSlotsLevel1)
-		}
-		if spellcasting.SpellSlotsLevel2 > 0 {
-			spellSlotOutput += fmt.Sprintf("\n  Level 2: %d", spellcasting.SpellSlotsLevel2)
-		}
-		if spellcasting.SpellSlotsLevel3 > 0 {
-			spellSlotOutput += fmt.Sprintf("\n  Level 3: %d", spellcasting.SpellSlotsLevel3)
-		}
-		if spellcasting.SpellSlotsLevel4 > 0 {
-			spellSlotOutput += fmt.Sprintf("\n  Level 4: %d", spellcasting.SpellSlotsLevel4)
-		}
-		if spellcasting.SpellSlotsLevel5 > 0 {
-			spellSlotOutput += fmt.Sprintf("\n  Level 5: %d", spellcasting.SpellSlotsLevel5)
-		}
-		if spellcasting.SpellSlotsLevel6 > 0 {
-			spellSlotOutput += fmt.Sprintf("\n  Level 6: %d", spellcasting.SpellSlotsLevel6)
-		}
-		if spellcasting.SpellSlotsLevel7 > 0 {
-			spellSlotOutput += fmt.Sprintf("\n  Level 7: %d", spellcasting.SpellSlotsLevel7)
-		}
-		if spellcasting.SpellSlotsLevel8 > 0 {
-			spellSlotOutput += fmt.Sprintf("\n  Level 8: %d", spellcasting.SpellSlotsLevel8)
-		}
-		if spellcasting.SpellSlotsLevel9 > 0 {
-			spellSlotOutput += fmt.Sprintf("\n  Level 9: %d", spellcasting.SpellSlotsLevel9)
+		switch strings.ToLower(abilityName) {
+		case "intelligence":
+			abilityMod = c.AbilityModifiers.Intelligence
+		case "wisdom":
+			abilityMod = c.AbilityModifiers.Wisdom
+		case "charisma":
+			abilityMod = c.AbilityModifiers.Charisma
 		}
 
-		base += spellSlotOutput
-	}
+    spellSaveDC := 8 + c.ProficiencyBonus + abilityMod
+    spellAttackBonus := c.ProficiencyBonus + abilityMod
+
+        if len(slots) > 0 {
+            base += "\nSpell slots:"
+            for _, s := range slots {
+                base += "\n" + s
+            }
+			base += fmt.Sprintf("\nSpellcasting ability: %s", abilityName)
+			base += fmt.Sprintf("\nSpell save DC: %d", spellSaveDC)
+			base += fmt.Sprintf("\nSpell attack bonus: %+d", spellAttackBonus)
+        }
+	
+    }
 }
-	initiative, ac, passivePerception := CalculateDerivedStats(c)
+
+
+	initiative, ac, passivePerception, _ := CalculateDerivedStats(c, eqService)
+	s.repo.UpdateDerivedStats(c, ac, initiative, passivePerception)
+	
 	base += fmt.Sprintf("\nArmor class: %d\nInitiative bonus: %d\nPassive perception: %d", ac, initiative, passivePerception)
+
 	return base
 }
 
@@ -204,62 +248,46 @@ func calculateStat(score int) int {
 	return mod
 }
 
-func CalculateDerivedStats(c domain.Character) (initiative int, ac int, passivePerception int) {
-	// 1. Initiative = DEX modifier
+func CalculateDerivedStats(c domain.Character, eqService EquipmentService) (initiative int, ac int, passivePerception int, err error) {
 	initiative = c.AbilityModifiers.Dexterity
 
-	// 2. Armor Class (AC)
-	baseAC := 10
 	if c.Equipment.Armor != "" {
-		switch strings.ToLower(c.Equipment.Armor) {
-		case "leather armor":
-			baseAC = 11
-			ac = baseAC + c.AbilityModifiers.Dexterity
-		case "studded leather":
-			baseAC = 12
-			ac = baseAC + c.AbilityModifiers.Dexterity
-		case "chain shirt":
-			baseAC = 13
-			// Medium armor: max DEX modifier = 2
-			mod := c.AbilityModifiers.Dexterity
-			if mod > 2 {
-				mod = 2
-			}
-			ac = baseAC + mod
-		case "scale mail":
-			baseAC = 14
-			mod := c.AbilityModifiers.Dexterity
-			if mod > 2 {
-				mod = 2
-			}
-			ac = baseAC + mod
-		case "plate":
-			baseAC = 18
-			ac = baseAC // Heavy armor ignores DEX
-		default:
-			ac = baseAC + c.AbilityModifiers.Dexterity
+		armor, err := eqService.LoadArmorByName(c.Equipment.Armor)
+		if err != nil {
+			ac = 10 + c.AbilityModifiers.Dexterity
+		} else {
+			ac = armor.CalculateAC(c.AbilityModifiers.Dexterity)
 		}
 	} else {
-		// No armor
-		ac = 10 + c.AbilityModifiers.Dexterity
-	}
-
-	// Shield adds +2 AC
-	if c.Equipment.Shield != "" {
-		ac += 2
-	}
-
-	// 3. Passive Perception = 10 + WIS modifier + proficiency if proficient
-	
+    	switch strings.ToLower(c.Class) {
+    case "barbarian":
+        ac = 10 + c.AbilityModifiers.Dexterity + c.AbilityModifiers.Constitution
+    case "monk":
+        if c.Equipment.Shield == "" {
+            ac = 10 + c.AbilityModifiers.Dexterity + c.AbilityModifiers.Wisdom
+        } else {
+            ac = 10 + c.AbilityModifiers.Dexterity
+        }
+    default:
+        ac = 10 + c.AbilityModifiers.Dexterity
+    }
+}
+ 	if c.Equipment.Shield != "" {
+        shield, err := eqService.LoadArmorByName(c.Equipment.Shield)
+        if err == nil && shield.ArmorClass != nil {
+            ac += shield.ArmorClass.Base // add the shield's base AC
+        }
+    }
 	passivePerception = 10 + c.AbilityModifiers.Wisdom
-	skills := strings.Split(c.Skills, ",") // assuming c.Skills is "acrobatics,athletics,perception"
+
+	skills := strings.Split(c.Skills, ",")
 	for _, skill := range skills {
-		skill = strings.TrimSpace(skill) // remove any extra spaces
+		skill = strings.TrimSpace(skill)
 		if strings.ToLower(skill) == "perception" {
 			passivePerception += c.ProficiencyBonus
 			break
 		}
 	}
 
-	return initiative, ac, passivePerception
+	return initiative, ac, passivePerception, nil
 }

@@ -5,11 +5,15 @@ import (
 )
 
 func IsValidRace(race string, races []string) bool {
-    raceLower := strings.ToLower(race)
+    normalizedRace := strings.ToLower(strings.ReplaceAll(race, " ", "-"))
+
     for _, r := range races {
-        if strings.ToLower(r) == raceLower {
+        normalizedR := strings.ToLower(strings.ReplaceAll(r, " ", "-"))
+
+        if normalizedRace == normalizedR {
             return true
         }
     }
+
     return false
 }

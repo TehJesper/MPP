@@ -62,31 +62,31 @@
                 <label for="Constitutionscore">Constitution</label><input name="Constitutionscore" placeholder="10" value="{{.AbilityScore.Constitution}}" class="stat"/>
               </div>
               <div class="modifier">
-                <input name="Constitutionmod" placeholder="+0" class="statmod"/>
+                <input name="Constitutionmod" placeholder="+0" value="{{.AbilityModifiers.Constitution}}" class="statmod"/>
               </div>
             </li>
             <li>
               <div class="score">
-                <label for="Wisdomscore">Wisdom</label><input name="Wisdomscore" placeholder="10" class="stat"/>
+                <label for="Wisdomscore">Wisdom</label><input name="Wisdomscore" placeholder="10" value="{{.AbilityScore.Wisdom}}" class="stat"/>
               </div>
               <div class="modifier">
-                <input name="Wisdommod" placeholder="+0" />
+                <input name="Wisdommod" placeholder="+0" value="{{.AbilityModifiers.Wisdom}}" />
               </div>
             </li>
             <li>
               <div class="score">
-                <label for="Intelligencescore">Intelligence</label><input name="Intelligencescore" placeholder="10" class="stat"/>
+                <label for="Intelligencescore">Intelligence</label><input name="Intelligencescore" placeholder="10" value="{{.AbilityScore.Intelligence}}" class="stat"/>
               </div>
               <div class="modifier">
-                <input name="Intelligencemod" placeholder="+0" class="statmod"/>
+                <input name="Intelligencemod" placeholder="+0" value="{{.AbilityModifiers.Intelligence}}" class="statmod"/>
               </div>
             </li>
             <li>
               <div class="score">
-                <label for="Charismascore">Charisma</label><input name="Charismascore" placeholder="10" class="stat"/>
+                <label for="Charismascore">Charisma</label><input name="Charismascore" placeholder="10" value="{{.AbilityScore.Charisma}}" class="stat"/>
               </div>
               <div class="modifier">
-                <input name="Charismamod" placeholder="+0" class="statmod"/>
+                <input name="Charismamod" placeholder="+0" value="{{.AbilityModifiers.Charisma}}" class="statmod"/>
               </div>
             </li>
           </ul>
@@ -196,7 +196,7 @@
         <div class="label-container">
           <label for="passiveperception">Passive Wisdom (Perception)</label>
         </div>
-        <input name="passiveperception" placeholder="10" />
+        <input name="passiveperception" value="{{.PassivePerception}}" placeholder="10" />
       </div>
       <div class="otherprofs box textblock">
         <label for="otherprofs">Other Proficiencies and Languages</label><textarea name="otherprofs"></textarea>
@@ -206,17 +206,17 @@
       <section class="combat">
         <div class="armorclass">
           <div>
-            <label for="ac">Armor Class</label><input name="ac" placeholder="10" type="text" />
+            <label for="ac">Armor Class</label><input name="ac" placeholder="10" value="{{.ArmorClass}}" type="text" />
           </div>
         </div>
         <div class="initiative">
           <div>
-            <label for="initiative">Initiative</label><input name="initiative" placeholder="+0" type="text" />
+            <label for="initiative">Initiative</label><input name="initiative" placeholder="+0" value="{{.Initiative}}"type="text" />
           </div>
         </div>
         <div class="speed">
           <div>
-            <label for="speed">Speed</label><input name="speed" placeholder="30" type="text" />
+            <label for="speed">Speed</label><input name="speed" placeholder="30"  type="text" />
           </div>
         </div>
         <div class="hp">

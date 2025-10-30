@@ -15,7 +15,7 @@ import (
 	"test/infrastructure/class"
 	"test/infrastructure/race"
 	"test/infrastructure/spells"
-	"test/infrastructure/equipment"
+	// "test/infrastructure/equipment"
 	"test/services"
 
 	_ "modernc.org/sqlite"
@@ -49,7 +49,7 @@ func initAPIData() {
 	go func() {
 		defer wg.Done()
 		if _, err := os.Stat("equipment.json"); errors.Is(err, os.ErrNotExist) {
-			equipment.FetchEquipment()
+			// equipment.FetchEquipment()
 		}
 	}()
 
@@ -95,7 +95,10 @@ func main() {
 	mainhand TEXT,
 	offhand TEXT,
 	shield TEXT,
-	armor TEXT
+	armor TEXT,
+	armor_class INTEGER,
+	initiative INTEGER,
+	passive_perception INTEGER
 )`)
 	if err != nil {
 		log.Fatal(err)

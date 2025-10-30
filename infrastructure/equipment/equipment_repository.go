@@ -1,33 +1,29 @@
 package equipment
 
-type EquipmentWrapper struct {
-	Data EquipmentData `json:"data"`
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+
+	"test/domain"
+)
+
+type EquipmentRepository struct {
+	FilePath string
 }
 
-type EquipmentData struct {
-	Equipments []Equipment `json:"equipments,omitempty"`
-}
+func (r EquipmentRepository) LoadAll() ([]domain.Equipments, error) {
+	data, err := os.ReadFile(r.FilePath)
 
-type Equipment struct {
-	Index             string            `json:"index,omitempty"`
-	Name              string            `json:"name,omitempty"`
-	EquipmentCategory *Category         `json:"equipment_category,omitempty"`
-	Properties        []Property        `json:"properties,omitempty"`
-	ArmorClass        *ArmorClass       `json:"armor_class,omitempty"`
-	ArmorCategory     string            `json:"armor_category,omitempty"` // e.g., Light, Medium, Heavy
-}
+	
+	if err != nil {
+		return nil, fmt.Errorf("failed to read file: %w", err)
+	}
 
-type Category struct {
-	Name  string `json:"name"`
-	Index string `json:"index"`
-}
+	var equipments []domain.Equipments
+	if err := json.Unmarshal(data, &equipments); err != nil {
+		return nil, fmt.Errorf("failed to parse JSON: %w", err)
+	}
 
-type Property struct {
-	Name  string `json:"name"`
-	Index string `json:"index"`
-}
-
-type ArmorClass struct {
-	Base     int  `json:"base"`
-	DexBonus bool `json:"dex_bonus"`
+	return equipments, nil
 }
