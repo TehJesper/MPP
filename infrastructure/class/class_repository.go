@@ -12,26 +12,26 @@ type Class struct {
 	Name               string              `json:"name"`
 	Subclasses         []Subclass          `json:"subclasses"`
 	ProficiencyChoices []ProficiencyChoice `json:"proficiency_choices"`
-	Spells 			   []Spells			   `json:"spells"`
-	ClassLevel 		   []ClassLevel		   `json:"class_levels"`
+	Spells             []Spells            `json:"spells"`
+	ClassLevel         []ClassLevel        `json:"class_levels"`
 }
 
 type ProficiencyChoice struct {
-	Choose int    `json:"choose"`
-	From   From   `json:"from"`
+	Choose int  `json:"choose"`
+	From   From `json:"from"`
 }
 
 type From struct {
-	Options       []Option `json:"options"`
+	Options []Option `json:"options"`
 }
 
 type Option struct {
-	Item       Item   `json:"item"`
+	Item Item `json:"item"`
 }
 
 type Item struct {
 	Index string `json:"index"`
-	Name  string `json:"name"` 	
+	Name  string `json:"name"`
 }
 
 type Subclass struct {
@@ -40,8 +40,8 @@ type Subclass struct {
 }
 
 type Spells struct {
-	Name string `json:"name"`
-	Level int `json:"level"` 
+	Name  string `json:"name"`
+	Level int    `json:"level"`
 }
 
 type ClassLevel struct {

@@ -8,13 +8,16 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 	"text/template"
 
+	"test/domain"
 	"test/infrastructure"
 	"test/infrastructure/class"
 	"test/infrastructure/race"
 	"test/infrastructure/spells"
+
 	// "test/infrastructure/equipment"
 	"test/services"
 
@@ -105,6 +108,8 @@ func main() {
 	}
 	// Init service
 	repo := infrastructure.NewSQLRepository(db)
+	
+	// eqService := &services.EquipmentService{}
 	service := services.NewService(repo)
 
 	switch os.Args[1] {
@@ -194,8 +199,23 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
+			   // Convert comma-separated skills to a map
+			skillMap := make(map[string]bool)
+			for _, skill := range strings.Split(chars.Skills, ",") {
+				skillMap[strings.TrimSpace(skill)] = true
+			}
+
+			// Pass both the character and the map to the template
+			tmplData := struct {
+				Character *domain.Character
+				SkillMap map[string]bool
+			}{
+				Character: &chars,
+				SkillMap: skillMap,
+			}
+			fmt.Print(tmplData)
 			tmpl := template.Must(template.ParseFiles("templates/list.html"))
-			tmpl.Execute(w, chars)
+			tmpl.Execute(w, tmplData)
 		})
 
 		fmt.Println("Server running on http://localhost:8080")

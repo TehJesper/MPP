@@ -2,14 +2,16 @@ package services
 
 import (
 	"fmt"
+	"strings"
 	"test/domain"
 	"test/infrastructure/equipment"
-	"strings"
 )
+
+type EquipmentService struct{}
 
 func (s *CharacterService) EquipCharacter(
 	name, weapon, slot, armor, shield string,
-) (error) {
+) error {
 	char, err := s.repo.View(name)
 	if err != nil {
 		return err
@@ -45,48 +47,83 @@ func (s *CharacterService) EquipCharacter(
 		}
 		char.EquipShield(shield)
 	}
+	ac, err := s.CalculateArmor(&char)
+	if err != nil {
+		fmt.Println("Failed to calculate AC:", err)
+	} else {
+		char.ArmorClass = ac
+		fmt.Println("New AC for", char.Name, "is", ac)
+	}
 
 	if err := s.repo.SaveEquipment(char); err != nil {
-    	fmt.Print("failed to save equipment: %w", err)
+		fmt.Print("failed to save equipment: %w", err)
 	}
 
 	return nil
 }
-type EquipmentService struct {
-	Repo equipment.EquipmentRepository
-}
 
-func (s EquipmentService) GetArmorAC(armorName string, dexMod int) (int, error) {
-	equipments, err := s.Repo.LoadAll()
+func (s *EquipmentService) LoadArmorByName(name string) (*domain.Equipments, error) {
+	equipments, err := equipment.LoadAll()
 	if err != nil {
-		return 0, fmt.Errorf("failed to load equipments: %w", err)
+		return nil, fmt.Errorf("failed to load equipment list: %w", err)
 	}
 
-	armor, err := domain.GetArmorByName(equipments, armorName)
+	normalizedInput := strings.ToLower(strings.TrimSpace(name))
+	normalizedInput = strings.ReplaceAll(normalizedInput, " armor", "")
+
+	for _, e := range equipments {
+		normalizedEquip := strings.ToLower(strings.TrimSpace(e.Name))
+		normalizedEquip = strings.ReplaceAll(normalizedEquip, " armor", "")
+		if normalizedInput == normalizedEquip {
+			return &e, nil
+		}
+	}
+
+	return nil, fmt.Errorf("armor not found: %s", name)
+}
+
+func (s *EquipmentService) GetArmorAC(armorName string, dexMod int) (int, error) {
+	armor, err := s.LoadArmorByName(armorName)
 	if err != nil {
 		return 0, err
 	}
 
 	return armor.CalculateAC(dexMod), nil
 }
-func (s EquipmentService) LoadArmorByName(name string) (*domain.Equipments, error) {
-    equipments, err := s.Repo.LoadAll()
-    if err != nil {
-        return nil, fmt.Errorf("failed to load equipment list: %w", err)
-    }
 
-    normalizedInput := strings.ToLower(strings.TrimSpace(name))
-    normalizedInput = strings.ReplaceAll(normalizedInput, " armor", "") // remove trailing "armor" for matching
+func (s *CharacterService) CalculateArmor(c *domain.Character) (int, error) {
+	ac := 0
+	dex := c.AbilityModifiers.Dexterity
 
-    for _, e := range equipments {
-        normalizedEquip := strings.ToLower(strings.TrimSpace(e.Name))
-        normalizedEquip = strings.ReplaceAll(normalizedEquip, " armor", "")
+	if c.Equipment.Armor != "" {
+		armor, err := s.eq.LoadArmorByName(c.Equipment.Armor)
+		if err != nil {
+			fmt.Println("Armor not found, default AC")
+			ac = 10 + dex
+		} else {
+			ac = armor.CalculateAC(dex)
+		}
+	} else {
+		switch strings.ToLower(c.Class) {
+		case "barbarian":
+			ac = 10 + dex + c.AbilityModifiers.Constitution
+		case "monk":
+			if c.Equipment.Shield == "" {
+				ac = 10 + dex + c.AbilityModifiers.Wisdom
+			} else {
+				ac = 10 + dex
+			}
+		default:
+			ac = 10 + dex
+		}
+	}
 
-        if normalizedInput == normalizedEquip {
-            return &e, nil
-        }
-    }
+	if c.Equipment.Shield != "" {
+		shield, err := s.eq.LoadArmorByName(c.Equipment.Shield)
+		if err == nil && shield.ArmorClass != nil {
+			ac += shield.ArmorClass.Base
+		}
+	}
 
-    return nil, fmt.Errorf("armor not found: %s", name)
+	return ac, nil
 }
-

@@ -42,6 +42,8 @@ func (r *SQLRepository) Save(c domain.Character) (domain.Character, error) {
 	args = append(args, abilities...)
 	args = append(args, modifiers...)
 	args = append(args, c.Skills)
+	args = append(args, c.Initiative)
+	args = append(args, c.PassivePerception)
 
 	res, err := r.db.Exec(`
 		INSERT INTO characters
@@ -49,9 +51,9 @@ func (r *SQLRepository) Save(c domain.Character) (domain.Character, error) {
 			name, race, class, level, proficiency_bonus, 
 			strength, dexterity, constitution, intelligence, wisdom, charisma,
 			strength_mod, dexterity_mod, constitution_mod, intelligence_mod, wisdom_mod, charisma_mod,
-			skills
+			skills, initiative, passive_perception
 		)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`, args...)
 	if err != nil {
 		return c, err
@@ -62,7 +64,6 @@ func (r *SQLRepository) Save(c domain.Character) (domain.Character, error) {
 	return c, nil
 }
 
-
 func (r *SQLRepository) View(name string) (domain.Character, error) {
 	var c domain.Character
 	var mainhand, offhand, shield, armor sql.NullString
@@ -71,7 +72,8 @@ func (r *SQLRepository) View(name string) (domain.Character, error) {
 		       strength, dexterity, constitution, intelligence, wisdom, charisma,
 		       strength_mod, dexterity_mod, constitution_mod, intelligence_mod, wisdom_mod, charisma_mod,
 		       skills,
-			   mainhand, offhand, shield, armor
+			   mainhand, offhand, shield, armor,
+			   armor_class, initiative, passive_perception
 		FROM characters
 		WHERE name = ?`, name)
 
@@ -83,6 +85,7 @@ func (r *SQLRepository) View(name string) (domain.Character, error) {
 		&c.AbilityModifiers.Intelligence, &c.AbilityModifiers.Wisdom, &c.AbilityModifiers.Charisma,
 		&c.Skills,
 		&mainhand, &offhand, &shield, &armor,
+		&c.ArmorClass, &c.Initiative, &c.PassivePerception,
 	)
 	if err != nil {
 		return c, err
@@ -105,9 +108,9 @@ func (r *SQLRepository) View(name string) (domain.Character, error) {
 func (r *SQLRepository) SaveEquipment(c domain.Character) error {
 	_, err := r.db.Exec(`
 		UPDATE characters
-		SET mainhand = ?, offhand = ?, shield = ?, armor = ?
+		SET mainhand = ?, offhand = ?, shield = ?, armor = ?, armor_class = ?
 		WHERE name = ?
-	`, c.Equipment.Mainhand, c.Equipment.Offhand, c.Equipment.Shield, c.Equipment.Armor, c.Name)
+	`, c.Equipment.Mainhand, c.Equipment.Offhand, c.Equipment.Shield, c.Equipment.Armor, c.ArmorClass, c.Name)
 
 	return err
 }
@@ -116,11 +119,11 @@ func (r *SQLRepository) Delete(name string) {
 	r.db.Exec("DELETE FROM characters WHERE name = ?", name)
 }
 
-func (r *SQLRepository) UpdateDerivedStats(c domain.Character, ac, initiative, passive int) error {
+func (r *SQLRepository) UpdateDerivedStats(c domain.Character, ac int) error {
 	_, err := r.db.Exec(`
 		UPDATE characters
-		SET armor_class = ?, initiative = ?, passive_perception = ?
+		SET armor_class = ?
 		WHERE name = ?
-	`, ac, initiative, passive, c.Name)
+	`, ac, c.Name)
 	return err
 }

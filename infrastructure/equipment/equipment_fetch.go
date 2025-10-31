@@ -5,7 +5,7 @@ package equipment
 // 	"encoding/json"
 // 	"log"
 // 	"os"
-  
+
 // 	"github.com/machinebox/graphql"
 // )
 

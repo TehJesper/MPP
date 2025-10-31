@@ -1,19 +1,19 @@
 package domain
 
 type Character struct {
-	ID    int
-	Name  string
-	Race  string
-	Class string
-	Level int
-	ProficiencyBonus int
-	AbilityScore AbilityScores
-	AbilityModifiers AbilityModifiers
-	Equipment Equipment
-	Skills string
+	ID                int
+	Name              string
+	Race              string
+	Class             string
+	Level             int
+	ProficiencyBonus  int
+	AbilityScore      AbilityScores
+	AbilityModifiers  AbilityModifiers
+	Equipment         Equipment
+	Skills            string
 	ArmorClass        int
-    Initiative        int
-    PassivePerception int
+	Initiative        int
+	PassivePerception int
 }
 type AbilityScores struct {
 	Strength     int
@@ -35,9 +35,9 @@ type AbilityModifiers struct {
 
 type Equipment struct {
 	Mainhand string
-	Offhand string
-	Shield string
-	Armor string
+	Offhand  string
+	Shield   string
+	Armor    string
 }
 
 func NewCharacter(
@@ -46,16 +46,19 @@ func NewCharacter(
 	abilities AbilityScores,
 	modifiers AbilityModifiers,
 	skills string,
+	initiative, passivePerception int,
 ) Character {
 	return Character{
-		Name:         name,
-		Race:         race,
-		Class:        class,
-		Level:        level,
-		ProficiencyBonus: proficiencybonus,
-		AbilityScore: abilities,
-		AbilityModifiers: modifiers,
-		Skills:       skills,
+		Name:              name,
+		Race:              race,
+		Class:             class,
+		Level:             level,
+		ProficiencyBonus:  proficiencybonus,
+		AbilityScore:      abilities,
+		AbilityModifiers:  modifiers,
+		Skills:            skills,
+		Initiative:        initiative,
+		PassivePerception: passivePerception,
 	}
 }
 
@@ -75,4 +78,3 @@ func (c *Character) EquipArmor(armor string) {
 func (c *Character) EquipShield(shield string) {
 	c.Equipment.Shield = shield
 }
-

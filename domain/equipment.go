@@ -1,12 +1,14 @@
 package domain
+
 import "fmt"
+
 type Equipments struct {
-    Index             string            `json:"index"`
-    Name              string            `json:"name"`
-    EquipmentCategory EquipmentCategory `json:"equipment_category"`
-    Properties        []Property        `json:"properties,omitempty"`
-    ArmorClass        *ArmorClass       `json:"armor_class,omitempty"`
-    ArmorCategory     string            `json:"armor_category,omitempty"`
+	Index             string            `json:"index"`
+	Name              string            `json:"name"`
+	EquipmentCategory EquipmentCategory `json:"equipment_category"`
+	Properties        []Property        `json:"properties,omitempty"`
+	ArmorClass        *ArmorClass       `json:"armor_class,omitempty"`
+	ArmorCategory     string            `json:"armor_category,omitempty"`
 }
 
 type EquipmentCategory struct {

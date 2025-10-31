@@ -1,20 +1,21 @@
 package services
+
 import (
+	"fmt"
 	"test/domain"
 	rce "test/infrastructure/race"
-	"fmt"
 )
 
-func checkRace(race string) (error) {
+func checkRace(race string) error {
 	races, err := rce.LoadRacesAndSubraces()
 
-    if err != nil {
-        return err
-    }
+	if err != nil {
+		return err
+	}
 
-    if !domain.IsValidRace(race, races) {
-        return fmt.Errorf("invalid race: %s", race)
-    }
+	if !domain.IsValidRace(race, races) {
+		return fmt.Errorf("invalid race: %s", race)
+	}
 
 	return nil
 }

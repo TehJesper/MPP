@@ -7,7 +7,7 @@ import (
 )
 
 func getSkills(class string) string {
-	skillsSlice, amount,  err := skl.LoadClassSkillsFromName(class)
+	skillsSlice, amount, err := skl.LoadClassSkillsFromName(class)
 	if err != nil {
 		fmt.Print(err)
 	}

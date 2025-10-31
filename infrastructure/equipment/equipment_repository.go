@@ -4,18 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-
 	"test/domain"
 )
 
-type EquipmentRepository struct {
-	FilePath string
-}
+func LoadAll() ([]domain.Equipments, error) {
+	data, err := os.ReadFile("5e-SRD-Equipment.json")
 
-func (r EquipmentRepository) LoadAll() ([]domain.Equipments, error) {
-	data, err := os.ReadFile(r.FilePath)
-
-	
 	if err != nil {
 		return nil, fmt.Errorf("failed to read file: %w", err)
 	}

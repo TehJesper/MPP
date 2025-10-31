@@ -23,9 +23,9 @@ type AbilityBonus struct {
 }
 
 type Subrace struct {
-	Index string `json:"index"`
-	Name  string `json:"name"`
-    AbilityBonuses []AbilityBonus `json:"ability_bonuses"`
+	Index          string         `json:"index"`
+	Name           string         `json:"name"`
+	AbilityBonuses []AbilityBonus `json:"ability_bonuses"`
 }
 
 type RacesWrapper struct {
@@ -58,65 +58,63 @@ func LoadRacesAndSubraces() ([]string, error) {
 }
 
 func GetRaceBonusesByName(raceName string) (map[string]int, error) {
-    data, err := OpenRaceFile()
-    if err != nil {
-        return nil, err
-    }
+	data, err := OpenRaceFile()
+	if err != nil {
+		return nil, err
+	}
 
-    var races RacesWrapper
-    if err := json.Unmarshal(data, &races); err != nil {
-        return nil, err
-    }
+	var races RacesWrapper
+	if err := json.Unmarshal(data, &races); err != nil {
+		return nil, err
+	}
 
-    normalizedInput := strings.ToLower(strings.ReplaceAll(raceName, " ", "-"))
+	normalizedInput := strings.ToLower(strings.ReplaceAll(raceName, " ", "-"))
 
-    var foundRace *Race
-    var parentRace *Race
+	var foundRace *Race
+	var parentRace *Race
 
-    for _, r := range races.Races {
-        normalizedR := strings.ToLower(strings.ReplaceAll(r.Name, " ", "-"))
-        if normalizedR == normalizedInput {
-            foundRace = &r
-            break
-        }
+	for _, r := range races.Races {
+		normalizedR := strings.ToLower(strings.ReplaceAll(r.Name, " ", "-"))
+		if normalizedR == normalizedInput {
+			foundRace = &r
+			break
+		}
 
-        for _, sub := range r.Subraces {
-            normalizedSub := strings.ToLower(strings.ReplaceAll(sub.Name, " ", "-"))
-            if normalizedSub == normalizedInput {
-                foundRace = &Race{
-                    Index:          sub.Index,
-                    Name:           sub.Name,
-                    AbilityBonuses: sub.AbilityBonuses,
-                }
-                parentRace = &r
-                break
-            }
-        }
+		for _, sub := range r.Subraces {
+			normalizedSub := strings.ToLower(strings.ReplaceAll(sub.Name, " ", "-"))
+			if normalizedSub == normalizedInput {
+				foundRace = &Race{
+					Index:          sub.Index,
+					Name:           sub.Name,
+					AbilityBonuses: sub.AbilityBonuses,
+				}
+				parentRace = &r
+				break
+			}
+		}
 
-        if foundRace != nil {
-            break
-        }
-    }
+		if foundRace != nil {
+			break
+		}
+	}
 
-    if foundRace == nil {
-        return nil, fmt.Errorf("race not found: %s", raceName)
-    }
+	if foundRace == nil {
+		return nil, fmt.Errorf("race not found: %s", raceName)
+	}
 
-    bonuses := make(map[string]int)
+	bonuses := make(map[string]int)
 
-    if parentRace != nil {
-        for _, b := range parentRace.AbilityBonuses {
-            key := strings.ToLower(b.AbilityScore.Index)
-            bonuses[key] += b.Bonus
-        }
-    }
+	if parentRace != nil {
+		for _, b := range parentRace.AbilityBonuses {
+			key := strings.ToLower(b.AbilityScore.Index)
+			bonuses[key] += b.Bonus
+		}
+	}
 
-    for _, b := range foundRace.AbilityBonuses {
-        key := strings.ToLower(b.AbilityScore.Index)
-        bonuses[key] += b.Bonus
-    }
+	for _, b := range foundRace.AbilityBonuses {
+		key := strings.ToLower(b.AbilityScore.Index)
+		bonuses[key] += b.Bonus
+	}
 
-    return bonuses, nil
+	return bonuses, nil
 }
-
-

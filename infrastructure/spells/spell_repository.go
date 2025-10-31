@@ -1,10 +1,10 @@
 package spells
 
 import (
-	"os"
-	"fmt"
-	"strings"
 	"encoding/json"
+	"fmt"
+	"os"
+	"strings"
 )
 
 type Response struct {
@@ -16,20 +16,20 @@ type Data struct {
 }
 
 type Spell struct {
-	Name    string    `json:"name"`
-	Index   string    `json:"index"`
-	Classes []Class   `json:"classes"`
+	Name    string  `json:"name"`
+	Index   string  `json:"index"`
+	Classes []Class `json:"classes"`
 }
 
 type Class struct {
-	Name          string          `json:"name"`
-	Index         string          `json:"index"`
-	Spellcasting  *Spellcasting   `json:"spellcasting,omitempty"`
-	Spells        []ClassSpell    `json:"spells,omitempty"`
+	Name         string        `json:"name"`
+	Index        string        `json:"index"`
+	Spellcasting *Spellcasting `json:"spellcasting,omitempty"`
+	Spells       []ClassSpell  `json:"spells,omitempty"`
 }
 
 type Spellcasting struct {
-	Info               []SpellInfo         `json:"info"`
+	Info                []SpellInfo         `json:"info"`
 	SpellcastingAbility SpellcastingAbility `json:"spellcasting_ability"`
 }
 
@@ -50,12 +50,8 @@ type SpellsWrapper struct {
 	Spells []Spell `json:"spells"`
 }
 
-func OpenSpellsFile() ([]byte, error) {
-	return os.ReadFile("spells.json")
-}
-
 func GetSpellLevel(spellName string, className string) (int, error) {
-	data, err := OpenSpellsFile()
+	data, err := os.ReadFile("spells.json")
 	if err != nil {
 		return -1, fmt.Errorf("failed to read spells.json: %w", err)
 	}
@@ -67,7 +63,7 @@ func GetSpellLevel(spellName string, className string) (int, error) {
 
 	spellName = strings.ToLower(spellName)
 	className = strings.ToLower(className)
-	
+
 	for _, spell := range wrapper.Spells {
 		for _, class := range spell.Classes {
 			if strings.ToLower(class.Name) == className {
