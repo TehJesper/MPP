@@ -248,10 +248,7 @@ Skill proficiencies: %s`,
 		}
 	}
 
-	// ac, _ := CalculateArmorStats(c, eqService)
-	// s.repo.UpdateDerivedStats(c, ac)
-
-	// base += fmt.Sprintf("\nArmor class: %d\nInitiative bonus: %d\nPassive perception: %d", ac, c.Initiative, c.PassivePerception)
+	base += fmt.Sprintf("\nArmor class: %d\nInitiative bonus: %d\nPassive perception: %d", c.ArmorClass, c.Initiative, c.PassivePerception)
 
 	return base
 }
@@ -260,36 +257,3 @@ func calculateStat(score int) int {
 	mod := int(math.Floor(float64(score-10) / 2))
 	return mod
 }
-
-// func CalculateArmorStats(c domain.Character, eqService EquipmentService) (ac int, err error) {
-
-// 	if c.Equipment.Armor != "" {
-// 		armor, err := eqService.LoadArmorByName(c.Equipment.Armor)
-// 		if err != nil {
-// 			ac = 10 + c.AbilityModifiers.Dexterity
-// 		} else {
-// 			ac = armor.CalculateAC(c.AbilityModifiers.Dexterity)
-// 		}
-// 	} else {
-//     	switch strings.ToLower(c.Class) {
-//     case "barbarian":
-//         ac = 10 + c.AbilityModifiers.Dexterity + c.AbilityModifiers.Constitution
-//     case "monk":
-//         if c.Equipment.Shield == "" {
-//             ac = 10 + c.AbilityModifiers.Dexterity + c.AbilityModifiers.Wisdom
-//         } else {
-//             ac = 10 + c.AbilityModifiers.Dexterity
-//         }
-//     default:
-//         ac = 10 + c.AbilityModifiers.Dexterity
-//     }
-// }
-//  	if c.Equipment.Shield != "" {
-//         shield, err := eqService.LoadArmorByName(c.Equipment.Shield)
-//         if err == nil && shield.ArmorClass != nil {
-//             ac += shield.ArmorClass.Base
-//         }
-//     }
-
-// 	return ac, nil
-// }
