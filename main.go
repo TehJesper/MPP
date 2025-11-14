@@ -99,9 +99,9 @@ func main() {
 	offhand TEXT,
 	shield TEXT,
 	armor TEXT,
-	armor_class INTEGER,
-	initiative INTEGER,
-	passive_perception INTEGER
+	armor_class INTEGER NOT NULL DEFAULT 0,
+    initiative INTEGER NOT NULL DEFAULT 0,
+    passive_perception INTEGER NOT NULL DEFAULT 0
 )`)
 	if err != nil {
 		log.Fatal(err)
@@ -213,7 +213,7 @@ func main() {
 				Character: &chars,
 				SkillMap: skillMap,
 			}
-			fmt.Print(tmplData)
+
 			tmpl := template.Must(template.ParseFiles("templates/list.html"))
 			tmpl.Execute(w, tmplData)
 		})

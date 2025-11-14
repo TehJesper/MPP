@@ -12,6 +12,7 @@ type Race struct {
 	Name           string         `json:"name"`
 	Subraces       []Subrace      `json:"subraces"`
 	AbilityBonuses []AbilityBonus `json:"ability_bonuses"`
+	Traits 	   	   []Trait        `json:"traits"`
 }
 
 type AbilityBonus struct {
@@ -26,6 +27,16 @@ type Subrace struct {
 	Index          string         `json:"index"`
 	Name           string         `json:"name"`
 	AbilityBonuses []AbilityBonus `json:"ability_bonuses"`
+}
+type Trait struct {
+	Index        string       `json:"index"`
+	Name         string       `json:"name"`
+	Proficiencies []Proficiency `json:"proficiencies"`
+}
+
+type Proficiency struct {
+	Index string `json:"index"`
+	Name  string `json:"name"`
 }
 
 type RacesWrapper struct {
@@ -117,4 +128,37 @@ func GetRaceBonusesByName(raceName string) (map[string]int, error) {
 	}
 
 	return bonuses, nil
+}
+
+func GetRaceSkillsByName(raceName string) ([]string, error) {
+	data, err := OpenRaceFile()
+	if err != nil {
+		return nil, err
+	}
+
+	var Races RacesWrapper
+	if err := json.Unmarshal(data, &Races); err != nil {
+		return nil, err
+	}
+	var skills []string
+	for _, r := range Races.Races {
+		if strings.EqualFold(r.Name, raceName) {
+			for _, t := range r.Traits {
+				if len(t.Proficiencies) != 0 {
+					for _, p := range t.Proficiencies {
+						name := strings.TrimSpace(p.Name)
+						if strings.HasPrefix(strings.ToLower(p.Index), "skill") {
+							parts := strings.SplitN(name, ":", 2)
+							if len(parts) == 2 {
+								skill := strings.TrimSpace(parts[1])
+									skills = append(skills, skill)
+							}
+						}
+					}
+				} 
+			}
+		}
+
+	}
+	return skills, nil
 }

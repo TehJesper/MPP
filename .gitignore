@@ -37,3 +37,5 @@ go.work.sum
 *.json
 # zip files
 *.zip
+*.md
+*.patch

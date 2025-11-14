@@ -39,8 +39,17 @@ query Races {
         bonus
       }
     }
+    traits {
+      index
+      name
+      proficiencies {
+        index
+        name
+      }
+    }
   }
 }
+
     `)
 
 	var respData AllRacesResponse

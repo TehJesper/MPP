@@ -35,7 +35,7 @@ func (s *CharacterService) CreateNewCharacter(
 		return domain.Character{}, err
 	}
 
-	skills := getSkills(class)
+	skills := getSkills(class, race)
 
 	// Proficiency bonus
 	bonus := 0
